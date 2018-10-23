@@ -1,0 +1,43 @@
+commands:
+  sell:
+    name: sell
+    aliases:
+    - sellall
+  autosell:
+    name: autosell
+    aliases:
+    - sellmenu
+    permission: herovender.vip
+    permission-message: '&cOnly VIPs have access to this feature!'
+  herovender:
+    name: herovender
+    usage: '&bHeroVender &7- &a/herovender <reload>'
+bonus:
+  1:
+    permission: herovender.vip
+    name: VIP bonus
+    bonus: 0.08
+  2:
+    permission: herovender.vip.plus
+    name: Bonus VIP+
+    bonus: 0.15
+delay:
+  1:
+    permission: herovender.default
+    delay: 10000
+  2:
+    permission: herovender.vip
+    delay: 1000
+shops:
+  default:
+    items:
+    - INK_SACK:4 1 price:1000
+    - DIAMOND 1 price:1000
+    - SLIME_BALL 1 name:&aYour_custom_named_item price:1000
+  zombie:
+    permission: vender.lapis
+    inherits:
+    - default
+    items:
+    - ROTTEN_FLESH 1 price:1500
+    - CARROT_ITEM 1 price:5500

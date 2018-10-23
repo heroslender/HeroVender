@@ -1,0 +1,6 @@
+name: HeroVender
+version: ${project.version}
+main: com.heroslender.herovender.HeroVender
+authors: [Heroslender]
+description: Plugin de /vender com bolsa de valores
+website: www.heroslender.cf/plugins/HeroVender
