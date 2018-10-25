@@ -1,6 +1,9 @@
 package com.heroslender.herovender.helpers;
 
+import com.heroslender.herovender.data.Invoice;
 import com.heroslender.herovender.data.User;
+import com.heroslender.herovender.utils.NumberUtil;
+import lombok.val;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,6 +30,16 @@ public class MessageBuilder {
 
     public MessageBuilder withPlaceholder(CommandSender sender) {
         withPlaceholder("player", sender.getName());
+        return this;
+    }
+
+    public MessageBuilder withPlaceholder(Invoice invoice) {
+        withPlaceholder("invoice-item-count", invoice.getItemCount());
+
+        val invoiceTotal = invoice.getTotal();
+        withPlaceholder("invoice-total", NumberUtil.format(invoiceTotal));
+        withPlaceholder("invoice-total-formatted", NumberUtil.formatShort(invoiceTotal));
+
         return this;
     }
 

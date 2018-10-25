@@ -2,7 +2,7 @@ package com.heroslender.herovender.listener;
 
 import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.controller.UserController;
-import com.heroslender.herovender.exception.HeroException;
+import com.heroslender.herovender.utils.HeroException;
 import lombok.val;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

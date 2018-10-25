@@ -1,10 +1,9 @@
 package com.heroslender.herovender.command;
 
 import com.heroslender.herovender.HeroVender;
-import com.heroslender.herovender.utils.HeroCommand;
 import org.bukkit.command.CommandSender;
 
-public class HerovenderCommand extends HeroCommand {
+public class HerovenderCommand extends Command {
 
     public HerovenderCommand() {
         super("herovender");

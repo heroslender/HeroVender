@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.logging.Level;
 
 @Data
 @AllArgsConstructor

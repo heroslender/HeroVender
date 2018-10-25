@@ -1,12 +1,11 @@
 package com.heroslender.herovender.data;
 
 import com.heroslender.herovender.HeroVender;
-import com.heroslender.herovender.exception.HeroException;
+import com.heroslender.herovender.command.exception.SellDelayException;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.utils.NumberUtil;
 import lombok.Data;
 import lombok.val;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -24,30 +23,12 @@ public class User {
         sellDelay = 0;
     }
 
-    public User(Player player, boolean shiftSellActive) {
-        this.player = player;
-        this.shiftSellActive = shiftSellActive;
-        sellDelay = 0;
-    }
-
     public Inventory getInventory() {
         return getPlayer().getInventory();
     }
 
     public Optional<SellBonus> getSellBonus() {
         return HeroVender.getInstance().getSellBonusController().getBonusForPlayer(getPlayer());
-    }
-
-    public void sendMessageByKey(String s) {
-        sendMessageByKey(s, new MessageBuilder());
-    }
-
-    public void sendMessageByKey(String s, MessageBuilder messageBuilder) {
-        HeroVender.getInstance().getMessageController().getMessage(s).ifPresent(message -> {
-            messageBuilder.withPlaceholder(this);
-
-            sendMessage(messageBuilder.build(message));
-        });
     }
 
     public void sendMessage(String message) {
@@ -58,7 +39,7 @@ public class User {
         setShiftSellActive(!isShiftSellActive());
     }
 
-    public void checkDelay() throws HeroException {
+    public void checkDelay() throws SellDelayException {
         val delay = HeroVender.getInstance().getUserController().getDelay(getPlayer());
 
         val releaseTimestamp = sellDelay + delay;
@@ -70,7 +51,7 @@ public class User {
                     .withPlaceholder(this);
             val message = HeroVender.getInstance().getMessageController().getMessage("sell.delay").orElse("&cYou must wait :delay: to sell again!");
 
-            throw new HeroException(messageBuilder.build(message));
+            throw new SellDelayException(messageBuilder.build(message), toWait);
         }
 
         setSellDelay(System.currentTimeMillis());

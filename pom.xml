@@ -6,16 +6,16 @@
 
     <groupId>com.heroslender</groupId>
     <artifactId>HeroVender</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <packaging>jar</packaging>
 
     <name>HeroVender</name>
 
-    <description>Plugin de /vender</description>
+    <description>A plugin that implements the /sell command, allowing your players to sell their inventory.</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>www.heroslender.cf/plugins/HeroVender</url>
+    <url>https://github.com/heroslender/HeroVender</url>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -60,10 +60,6 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
@@ -85,7 +81,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

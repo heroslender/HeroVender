@@ -1,6 +1,6 @@
 package com.heroslender.herovender.service;
 
-import com.heroslender.herovender.utils.CustomFileConfiguration;
+import com.heroslender.herovender.helpers.CustomFileConfiguration;
 import lombok.val;
 
 import java.util.*;
@@ -16,7 +16,7 @@ public class MessageService implements Service<String> {
     @Override
     public void init() {
         config.reload();
-        loadOrSaveDefault("sell.sold", "&aYou sold &7:item-count: &afor &f:price-formated:&a!");
+        loadOrSaveDefault("sell.sold", "&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!");
         loadOrSaveDefault("sell.no-items", "&cYou don't have any items that can be sold!");
         loadOrSaveDefault("sell.delay", "&cYou must wait :delay: to sell again!");
         loadOrSaveDefault("autosell.menu.title", "Sell menu!");

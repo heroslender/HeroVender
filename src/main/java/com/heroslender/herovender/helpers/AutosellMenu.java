@@ -3,8 +3,6 @@ package com.heroslender.herovender.helpers;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.data.User;
-import com.heroslender.herovender.utils.HItem;
-import com.heroslender.herovender.utils.Menu;
 import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
 import org.bukkit.Material;

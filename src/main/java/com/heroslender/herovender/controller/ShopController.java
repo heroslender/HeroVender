@@ -1,14 +1,16 @@
 package com.heroslender.herovender.controller;
 
 import com.heroslender.herovender.HeroVender;
+import com.heroslender.herovender.command.exception.SellDelayException;
 import com.heroslender.herovender.data.Invoice;
 import com.heroslender.herovender.data.SellItem;
 import com.heroslender.herovender.data.Shop;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.event.PlayerSellEvent;
-import com.heroslender.herovender.exception.HeroException;
+import com.heroslender.herovender.utils.HeroException;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.service.ShopService;
+import lombok.NonNull;
 import lombok.val;
 import org.bukkit.Bukkit;
 
@@ -28,7 +30,7 @@ public class ShopController implements Controller {
      * @param user The player selling the inventory
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sell(final User user) throws HeroException {
+    public Invoice sell(@NonNull final User user) throws HeroException {
         val invoice = sellSilent(user);
         if (invoice == null) {
             // PlayerSellEvent was cancelled
@@ -42,8 +44,7 @@ public class ShopController implements Controller {
         message.ifPresent(msg -> {
             MessageBuilder messageBuilder = new MessageBuilder()
                     .withPlaceholder(user)
-                    .withPlaceholder("item-count", invoice.getItemCount())
-                    .withPlaceholder("price-formated", invoice.getTotal());
+                    .withPlaceholder(invoice);
 
             user.sendMessage(messageBuilder.build(msg));
         });
@@ -57,7 +58,7 @@ public class ShopController implements Controller {
      * @param user The player selling the inventory
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sellSilent(final User user) throws HeroException {
+    public Invoice sellSilent(@NonNull final User user) throws HeroException {
         return sellSilent(user, shopService.get().stream()
                 .filter(shop -> shop.getPermission() == null || user.getPlayer().hasPermission(shop.getPermission()))
                 .sorted(Comparator.comparingInt(Shop::getPriority))
@@ -71,7 +72,7 @@ public class ShopController implements Controller {
      * @param shops The shops to sell to
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sellSilent(final User user, final Shop... shops) throws HeroException {
+    public Invoice sellSilent(@NonNull final User user, @NonNull final Shop... shops) throws SellDelayException {
         user.checkDelay();
 
         val inventory = user.getInventory();
