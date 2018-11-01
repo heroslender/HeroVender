@@ -18,9 +18,10 @@ public class CustomFileConfiguration extends YamlConfiguration {
 
     /**
      * Create/get a configuration from the plugin folder
-     * @param name The configuration file name, without {@code .yml} at the end
+     *
+     * @param name   The configuration file name, without {@code .yml} at the end
      * @param plugin An instance of your plugin
-     * @throws IOException Failed to create de configuration file
+     * @throws IOException                   Failed to create de configuration file
      * @throws InvalidConfigurationException The configuration file represents an invalid YAML Configuration
      */
     public CustomFileConfiguration(String name, Plugin plugin) throws IOException, InvalidConfigurationException {
@@ -59,14 +60,22 @@ public class CustomFileConfiguration extends YamlConfiguration {
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdir();
 
-        if (!configFile.exists())
-            configFile.createNewFile();
+        if (!configFile.exists()) {
+            try {
+                plugin.saveResource("messages.yml", false);
+            } catch (IllegalArgumentException e) {
+                // File not found in resources, creating a blank one
+                configFile.createNewFile();
+            }
+        }
 
         load(configFile);
     }
+
     /**
      * Gets the requested String by path, returning {@code null} if not found.
-     * @param path Path of the String to get.
+     *
+     * @param path            Path of the String to get.
      * @param translateColors Translate colors from {@code &} color codes
      * @return Requested String.
      */
@@ -76,8 +85,9 @@ public class CustomFileConfiguration extends YamlConfiguration {
 
     /**
      * Gets the requested String by path, returning the default value if not found.
-     * @param path Path of the String to get.
-     * @param def The default value to return if the path is not found or is not a String.
+     *
+     * @param path            Path of the String to get.
+     * @param def             The default value to return if the path is not found or is not a String.
      * @param translateColors Translate colors from {@code &} color codes
      * @return Requested String.
      */

@@ -3,12 +3,6 @@ commands:
     name: sell
     aliases:
     - sellall
-  autosell:
-    name: autosell
-    aliases:
-    - sellmenu
-    permission: herovender.vip
-    permission-message: '&cOnly VIPs have access to this feature!'
   herovender:
     name: herovender
     usage: '&bHeroVender &7- &a/herovender <reload>'
@@ -28,6 +22,9 @@ delay:
   2:
     permission: herovender.vip
     delay: 1000
+  3:
+    permission: herovender.staff
+    delay: 0
 shops:
   default:
     items:

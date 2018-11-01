@@ -20,7 +20,7 @@ public class UserService implements Service<User> {
             for (String id : config.getKeys(false)) {
                 String permission = config.getString(id + ".permission");
                 int delay = config.getInt(id + ".delay", -1);
-                if (permission != null && delay > 0) {
+                if (permission != null && delay >= 0) {
                     delays.put(permission, delay);
                 }
             }

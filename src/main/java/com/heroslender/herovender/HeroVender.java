@@ -1,19 +1,21 @@
 package com.heroslender.herovender;
 
-import com.heroslender.herovender.command.AutosellCommand;
 import com.heroslender.herovender.command.HerovenderCommand;
 import com.heroslender.herovender.command.SellCommand;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.controller.SellBonusController;
 import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.controller.UserController;
-import com.heroslender.herovender.listener.AutosellListener;
+import com.heroslender.herovender.helpers.CustomFileConfiguration;
+import com.heroslender.herovender.helpers.menu.Menu;
+import com.heroslender.herovender.listener.AutoSellListener;
+import com.heroslender.herovender.listener.HeroStackDropsListener;
+import com.heroslender.herovender.listener.ShiftSellListener;
 import com.heroslender.herovender.listener.UserListener;
 import com.heroslender.herovender.service.*;
-import com.heroslender.herovender.helpers.CustomFileConfiguration;
-import com.heroslender.herovender.helpers.Menu;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -74,11 +76,18 @@ public final class HeroVender extends JavaPlugin {
         Menu.registar(this);
 
         new SellCommand(shopController);
-        new AutosellCommand();
         new HerovenderCommand();
 
-        getServer().getPluginManager().registerEvents(new AutosellListener(userController, shopController), this);
-        getServer().getPluginManager().registerEvents(new UserListener(userController), this);
+        if (getServer().getPluginManager().isPluginEnabled("HeroStackDrops")) {
+            registerEvent(new HeroStackDropsListener(userController, shopController));
+        }
+        registerEvent(new ShiftSellListener(userController, shopController));
+        registerEvent(new AutoSellListener(userController, shopController));
+        registerEvent(new UserListener(userController));
+    }
+
+    private void registerEvent(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
     @Override

@@ -1,33 +1,49 @@
 package com.heroslender.herovender.service;
 
 import com.heroslender.herovender.helpers.CustomFileConfiguration;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 public class MessageService implements Service<String> {
     private final CustomFileConfiguration config;
     private final Map<String, String> messages = new HashMap<>();
-
-    public MessageService(CustomFileConfiguration customFileConfiguration) {
-        this.config = customFileConfiguration;
-    }
 
     @Override
     public void init() {
         config.reload();
         loadOrSaveDefault("sell.sold", "&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!");
         loadOrSaveDefault("sell.no-items", "&cYou don't have any items that can be sold!");
-        loadOrSaveDefault("sell.delay", "&cYou must wait :delay: to sell again!");
-        loadOrSaveDefault("autosell.menu.title", "Sell menu!");
-        loadOrSaveDefault("autosell.menu.sell", "DOUBLE_PLANT 1 name:&aSell lore:&7Click_here_to_sell_your_inventory!");
-        loadOrSaveDefault("autosell.menu.autosell.on", "LEVER 1 name:&aAuto-Sell " +
+        loadOrSaveDefault("sell.delay", "&cYou must wait :delay-formated: to sell again!");
+        loadOrSaveDefault("sell.menu.title", "Sell menu!");
+        loadOrSaveDefault("sell.menu.sell", "DOUBLE_PLANT 1 name:&aSell lore:&7Click_here_to_sell_your_inventory!");
+        loadOrSaveDefault("sell.menu.shiftsell.no-permission", "LEVER 1 name:&aShift-Sell " +
+                "lore:&7Sell_your_inventory_by_sneaking|" +
+                "|" +
+                "&7(Insufficient_permissions)");
+        loadOrSaveDefault("sell.menu.shiftsell.on", "LEVER 1 name:&aShift-Sell " +
                 "lore:&7Sell_your_inventory_by_sneaking|" +
                 "|" +
                 "&7Current_state->_&aActive|" +
                 "&7(Click_to_deactivate)");
-        loadOrSaveDefault("autosell.menu.autosell.off", "LEVER 1 name:&cAuto-Sell " +
+        loadOrSaveDefault("sell.menu.shiftsell.off", "LEVER 1 name:&cShift-Sell " +
                 "lore:&7Sell_your_inventory_by_sneaking|" +
+                "|" +
+                "&7Current_state->_&cInactive|" +
+                "&7(Click_to_activate)");
+        loadOrSaveDefault("sell.menu.autosell.no-permission", "LEVER 1 name:&aAuto-Sell " +
+                "lore:&7Automatically_sell_your_inventory_when_full.|" +
+                "|" +
+                "&7(Insufficient_permissions)");
+        loadOrSaveDefault("sell.menu.autosell.on", "LEVER 1 name:&aAuto-Sell " +
+                "lore:&7Automatically_sell_your_inventory_when_full.|" +
+                "|" +
+                "&7Current_state->_&aActive|" +
+                "&7(Click_to_deactivate)");
+        loadOrSaveDefault("sell.menu.autosell.off", "LEVER 1 name:&cAuto-Sell " +
+                "lore:&7Automatically_sell_your_inventory_when_full.|" +
                 "|" +
                 "&7Current_state->_&cInactive|" +
                 "&7(Click_to_activate)");
@@ -44,7 +60,10 @@ public class MessageService implements Service<String> {
             config.save();
         }
 
-        messages.put(messageId, config.getString(messageId, defaultMessage, true));
+        final String message = config.getString(messageId, defaultMessage, true);
+        if (!message.equals("none")){
+            messages.put(messageId, message);
+        }
     }
 
     @Override

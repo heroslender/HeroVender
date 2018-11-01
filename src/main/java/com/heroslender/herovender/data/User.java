@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.val;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class User {
     private final Player player;
     private boolean shiftSellActive;
+    private boolean autoSellActive;
     private long sellDelay;
 
     public User(Player player) {
@@ -39,6 +41,10 @@ public class User {
         setShiftSellActive(!isShiftSellActive());
     }
 
+    public void toggleAutoSell() {
+        setAutoSellActive(!isAutoSellActive());
+    }
+
     public void checkDelay() throws SellDelayException {
         val delay = HeroVender.getInstance().getUserController().getDelay(getPlayer());
 
@@ -55,5 +61,16 @@ public class User {
         }
 
         setSellDelay(System.currentTimeMillis());
+    }
+
+    public int getEmptySlotsCount() {
+        int count = 0;
+        val invContents = getInventory().getContents();
+
+        for (final ItemStack item : invContents) {
+            if (item == null) count++;
+        }
+
+        return count;
     }
 }
