@@ -9,10 +9,9 @@ import com.heroslender.herovender.utils.HeroException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 @RequiredArgsConstructor
 public class AutoSellListener implements Listener {
@@ -20,9 +19,9 @@ public class AutoSellListener implements Listener {
     private final ShopController shopController;
 
     @EventHandler
-    private void onPlayerPickupItem(final EntityPickupItemEvent e) {
-        if (!e.isCancelled() && e.getEntity() instanceof Player) {
-            val user = userController.getOrCreate((Player) e.getEntity());
+    private void onPlayerPickupItem(final PlayerPickupItemEvent e) {
+        if (!e.isCancelled()) {
+            val user = userController.getOrCreate(e.getPlayer());
 
             if (user.isAutoSellActive() && user.getEmptySlotsCount() <= 1) {
                 autoSell(user);
@@ -30,7 +29,7 @@ public class AutoSellListener implements Listener {
         }
     }
 
-    private void autoSell(final User user){
+    private void autoSell(final User user) {
         try {
             shopController.sell(user);
         } catch (SellDelayException ex) {

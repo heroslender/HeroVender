@@ -27,7 +27,7 @@ public class CustomFileConfiguration extends YamlConfiguration {
     public CustomFileConfiguration(String name, Plugin plugin) throws IOException, InvalidConfigurationException {
         this.plugin = plugin;
 
-        configFile = new File(plugin.getDataFolder(), name + ".yml");
+        configFile = new File(plugin.getDataFolder(), name.endsWith(".yml") ? name : name + ".yml");
 
         loadConfig();
     }
@@ -39,7 +39,7 @@ public class CustomFileConfiguration extends YamlConfiguration {
         try {
             save(configFile);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "There was an error while updating the " + configFile.getName() + " configuration!", e);
+            plugin.getLogger().log(Level.SEVERE, "There was an error while saving the " + configFile.getName() + " configuration!", e);
         }
     }
 
@@ -62,7 +62,8 @@ public class CustomFileConfiguration extends YamlConfiguration {
 
         if (!configFile.exists()) {
             try {
-                plugin.saveResource("messages.yml", false);
+                // Save the config file if found inside the jar
+                plugin.saveResource(configFile.getName(), false);
             } catch (IllegalArgumentException e) {
                 // File not found in resources, creating a blank one
                 configFile.createNewFile();
@@ -87,12 +88,12 @@ public class CustomFileConfiguration extends YamlConfiguration {
      * Gets the requested String by path, returning the default value if not found.
      *
      * @param path            Path of the String to get.
-     * @param def             The default value to return if the path is not found or is not a String.
+     * @param defaultValue    The default value to return if the path is not found or is not a String.
      * @param translateColors Translate colors from {@code &} color codes
      * @return Requested String.
      */
-    public String getString(final String path, final String def, final boolean translateColors) {
-        String value = getString(path, def);
+    public String getString(final String path, final String defaultValue, final boolean translateColors) {
+        String value = getString(path, defaultValue);
         return value != null && translateColors ? ChatColor.translateAlternateColorCodes('&', value) : value;
     }
 }
