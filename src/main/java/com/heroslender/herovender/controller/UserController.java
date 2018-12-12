@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class UserController implements Controller {
+public class UserController {
     private final UserService userService;
 
     public UserService getUserService() {

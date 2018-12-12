@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import java.util.Comparator;
 import java.util.Optional;
 
-public class SellBonusController implements Controller {
+public class SellBonusController {
     private final SellBonusService sellBonusService;
 
     public SellBonusController(SellBonusService sellBonusService) {

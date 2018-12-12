@@ -4,7 +4,7 @@ import com.heroslender.herovender.service.MessageService;
 
 import java.util.Optional;
 
-public class MessageController implements Controller {
+public class MessageController {
     private final MessageService messageService;
 
     public MessageController(MessageService messageService) {

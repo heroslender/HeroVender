@@ -17,7 +17,7 @@ import org.bukkit.Bukkit;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class ShopController implements Controller {
+public class ShopController {
     private final ShopService shopService;
 
     public ShopController(ShopService shopService) {
