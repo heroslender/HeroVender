@@ -129,7 +129,7 @@ public class MetaItemStack {
     }
 
     public double getPrice() {
-        return price;
+        return price / getItemStack().getAmount();
     }
 
     public boolean completePotion() {
