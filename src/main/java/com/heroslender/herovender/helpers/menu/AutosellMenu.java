@@ -1,5 +1,6 @@
 package com.heroslender.herovender.helpers.menu;
 
+import com.heroslender.herovender.Config;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.data.User;
@@ -46,7 +47,7 @@ public class AutosellMenu extends Menu {
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
-        if (!user.getPlayer().hasPermission("herovender.shiftsell")){
+        if (!user.getPlayer().hasPermission(Config.SHIFTSELL_PERMISSION)){
             val sellItemString = messageController.getMessage("sell.menu.shiftsell.no-permission").orElse(null);
 
             val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
@@ -91,7 +92,7 @@ public class AutosellMenu extends Menu {
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
-        if (!user.getPlayer().hasPermission("herovender.autosell")){
+        if (!user.getPlayer().hasPermission(Config.AUTOSELL_PERMISSION)){
             val sellItemString = messageController.getMessage("sell.menu.autosell.no-permission").orElse(null);
 
             val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));

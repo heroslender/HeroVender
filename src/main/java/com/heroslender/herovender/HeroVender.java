@@ -1,7 +1,9 @@
 package com.heroslender.herovender;
 
+import com.heroslender.herovender.command.AutosellCommand;
 import com.heroslender.herovender.command.HerovenderCommand;
 import com.heroslender.herovender.command.SellCommand;
+import com.heroslender.herovender.command.ShiftsellCommand;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.controller.SellBonusController;
 import com.heroslender.herovender.controller.ShopController;
@@ -77,6 +79,8 @@ public final class HeroVender extends JavaPlugin {
 
         new SellCommand(shopController);
         new HerovenderCommand();
+        new AutosellCommand();
+        new ShiftsellCommand();
 
         if (getServer().getPluginManager().isPluginEnabled("HeroStackDrops")) {
             registerEvent(new HeroStackDropsListener(userController, shopController));

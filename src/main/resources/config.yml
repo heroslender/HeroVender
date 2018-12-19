@@ -2,7 +2,13 @@ commands:
   sell:
     name: sell
     aliases:
-    - sellall
+      - sellall
+  autosell:
+    name: autosell
+    permisson-message: "&cYou don't have permission to use that."
+  shiftsell:
+    name: shiftsell
+    permisson-message: "&cYou don't have permission to use that."
   herovender:
     name: herovender
     usage: '&bHeroVender &7- &a/herovender <reload>'
@@ -28,13 +34,13 @@ delay:
 shops:
   default:
     items:
-    - INK_SACK:4 1 price:1000
-    - DIAMOND 1 price:1000
-    - SLIME_BALL 1 name:&aYour_custom_named_item price:1000
+      - INK_SACK:4 1 price:1000
+      - DIAMOND 1 price:1000
+      - SLIME_BALL 1 name:&aYour_custom_named_item price:1000
   zombie:
     permission: vender.lapis
     inherits:
-    - default
+      - default
     items:
-    - ROTTEN_FLESH 1 price:1500
-    - CARROT_ITEM 1 price:5500
+      - ROTTEN_FLESH 1 price:1500
+      - CARROT_ITEM 1 price:5500

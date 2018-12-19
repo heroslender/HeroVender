@@ -17,6 +17,10 @@ public class MessageService implements Service<String> {
         loadOrSaveDefault("sell.sold", "&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!");
         loadOrSaveDefault("sell.no-items", "&cYou don't have any items that can be sold!");
         loadOrSaveDefault("sell.delay", "&cYou must wait :delay-formated: to sell again!");
+        loadOrSaveDefault("sell.autosell.on", "&aYou have activated the Auto-Sell!");
+        loadOrSaveDefault("sell.autosell.off", "&cYou have deactivated the Auto-Sell!");
+        loadOrSaveDefault("sell.shiftsell.on", "&aYou have activated the Shift-Sell!");
+        loadOrSaveDefault("sell.shiftsell.off", "&cYou have deactivated the Shift-Sell!");
         loadOrSaveDefault("sell.menu.title", "Sell menu!");
         loadOrSaveDefault("sell.menu.sell", "DOUBLE_PLANT 1 name:&aSell lore:&7Click_here_to_sell_your_inventory!");
         loadOrSaveDefault("sell.menu.shiftsell.no-permission", "LEVER 1 name:&aShift-Sell " +

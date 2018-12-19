@@ -8,10 +8,10 @@ import com.heroslender.herovender.utils.HeroException;
 import lombok.val;
 import org.bukkit.command.CommandSender;
 
-public class AutosellCommand extends Command {
+public class ShiftsellCommand extends Command {
 
-    public AutosellCommand() {
-        super("autosell");
+    public ShiftsellCommand() {
+        super("shiftsell");
     }
 
     @Override
@@ -23,11 +23,11 @@ public class AutosellCommand extends Command {
 
         val user = getUser(sender).orElseThrow(CommandAllowsPlayersOnlyException::new);
 
-        user.toggleAutoSell();
+        user.toggleShiftSell();
 
-        val messageOpt = user.isAutoSellActive()
-                ? HeroVender.getInstance().getMessageController().getMessage("sell.autosell.on")
-                : HeroVender.getInstance().getMessageController().getMessage("sell.autosell.off");
+        val messageOpt = user.isShiftSellActive()
+                ? HeroVender.getInstance().getMessageController().getMessage("sell.shiftsell.on")
+                : HeroVender.getInstance().getMessageController().getMessage("sell.shiftsell.off");
 
         messageOpt.ifPresent(message -> {
             val messageBuilder = new MessageBuilder()
