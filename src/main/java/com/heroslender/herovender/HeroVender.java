@@ -15,13 +15,10 @@ import com.heroslender.herovender.listener.UserListener;
 import com.heroslender.herovender.service.*;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -87,6 +84,8 @@ public final class HeroVender extends JavaPlugin {
         registerEvent(new ShiftSellListener(userController, shopController));
         registerEvent(new AutoSellListener(userController, shopController));
         registerEvent(new UserListener(userController));
+
+        new Metrics(this);
     }
 
     private void registerEvent(Listener listener) {
