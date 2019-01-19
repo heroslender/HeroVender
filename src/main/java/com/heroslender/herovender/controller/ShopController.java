@@ -10,6 +10,7 @@ import com.heroslender.herovender.event.PlayerSellEvent;
 import com.heroslender.herovender.utils.HeroException;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.service.ShopService;
+import com.heroslender.herovender.utils.NmsUtils;
 import lombok.NonNull;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -24,30 +25,45 @@ public class ShopController {
         this.shopService = shopService;
     }
 
+    public Invoice sell(@NonNull final User user) throws HeroException {
+        return sell(user, true, false);
+    }
+
     /**
      * Sell the player's inventory to the shops he has access to
      *
      * @param user The player selling the inventory
+     * @param chat Send the message in the player chat?
+     * @param actionBar Send the message in the player action bar?
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sell(@NonNull final User user) throws HeroException {
+    public Invoice sell(@NonNull final User user, final boolean chat, final boolean actionBar) throws HeroException {
         val invoice = sellSilent(user);
         if (invoice == null) {
             // PlayerSellEvent was cancelled
             return null;
         }
 
-        val message = invoice.getItems().isEmpty()
-                ? HeroVender.getInstance().getMessageController().getMessage("sell.no-items")
-                : HeroVender.getInstance().getMessageController().getMessage("sell.sold");
+        if (chat || actionBar) {
+            val message = invoice.getItems().isEmpty()
+                    ? HeroVender.getInstance().getMessageController().getMessage("sell.no-items")
+                    : HeroVender.getInstance().getMessageController().getMessage("sell.sold");
 
-        message.ifPresent(msg -> {
-            MessageBuilder messageBuilder = new MessageBuilder()
-                    .withPlaceholder(user)
-                    .withPlaceholder(invoice);
+            message.ifPresent(msg -> {
+                MessageBuilder messageBuilder = new MessageBuilder()
+                        .withPlaceholder(user)
+                        .withPlaceholder(invoice);
 
-            user.sendMessage(messageBuilder.build(msg));
-        });
+                val toSend = messageBuilder.build(msg);
+
+                if (chat){
+                    user.sendMessage(toSend);
+                }
+                if (actionBar) {
+                    NmsUtils.sendActionBar(toSend, user.getPlayer());
+                }
+            });
+        }
 
         return invoice;
     }

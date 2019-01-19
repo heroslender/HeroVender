@@ -11,6 +11,7 @@ commands:
     permisson-message: "&cYou don't have permission to use that."
   herovender:
     name: herovender
+    permisson: 'herovender.admin'
     usage: '&bHeroVender &7- &a/herovender <reload>'
 bonus:
   1:

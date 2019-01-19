@@ -2,8 +2,23 @@ package com.heroslender.herovender.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.Constructor;
 
 public class NmsUtils {
+    private static Constructor<?> chatMsgConst, actionPacketConst = null;
+
+    static {
+        try {
+            Class<?> baseComponent = getNMSClass("IChatBaseComponent");
+            actionPacketConst = getNMSClass("PacketPlayOutChat").getConstructor(baseComponent, Byte.TYPE);
+            chatMsgConst = getNMSClass("ChatMessage").getDeclaredConstructor(String.class, Object[].class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Registar um Command no servidor sem precisar de registar na plugin.yml
@@ -22,6 +37,45 @@ public class NmsUtils {
             commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, prefixo, comando);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    public static void sendActionBar(String message, Player... players) {
+        if (chatMsgConst == null || actionPacketConst == null) {
+            // Not initialized
+            return;
+        }
+
+        try {
+            Object ichatbc = chatMsgConst.newInstance(message, new Object[0]);
+            Object packet = actionPacketConst.newInstance(ichatbc, (byte) 2);
+
+            for (Player player : players) {
+                sendPacket(player, packet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sendPacket(Player player, Object packet) {
+        try {
+            Object handle = player.getClass().getMethod("getHandle").invoke(player);
+            Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+            playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Class<?> getNMSClass(String name) {
+        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+        try {
+            return Class.forName("net.minecraft.server." + version + "." + name);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
