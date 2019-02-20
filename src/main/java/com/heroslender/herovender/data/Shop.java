@@ -8,8 +8,9 @@ import lombok.NonNull;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalDouble;
+import java.util.Optional;
 
 @Data
 @AllArgsConstructor
@@ -43,16 +44,14 @@ public class Shop {
         }
     }
 
-    public OptionalDouble getPrice(final ItemStack itemStack) {
+    public Optional<Double> getPrice(final ItemStack itemStack) {
         if (itemStack == null) {
-            return OptionalDouble.empty();
+            return Optional.empty();
         }
 
-        for (ShopItem item : items) {
-            if (item.getItemStack().isSimilar(itemStack)) {
-                return OptionalDouble.of(item.getPrice());
-            }
-        }
-        return OptionalDouble.empty();
+        return items.stream()
+                .filter(item -> item.getItemStack().isSimilar(itemStack))
+                .max(Comparator.comparingDouble(ShopItem::getPrice))
+                .map(ShopItem::getPrice);
     }
 }

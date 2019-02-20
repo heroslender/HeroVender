@@ -97,7 +97,7 @@ public class ShopController {
         for (Shop shop : shops) {
             for (int i = 0; i < inventory.getContents().length; i++) {
                 val itemStack = inventory.getItem(i);
-                val price = shop.getPrice(itemStack).orElse(-1);
+                val price = shop.getPrice(itemStack).orElse(-1D);
                 if (price <= 0) continue;
                 inventory.setItem(i, null);
 
