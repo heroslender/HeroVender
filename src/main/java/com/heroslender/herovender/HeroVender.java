@@ -52,7 +52,7 @@ public final class HeroVender extends JavaPlugin {
         messageController = new MessageController(messageService);
         services.add(messageService);
 
-        ShopService shopService = new ShopService(getConfig());
+        ShopService shopService = new ShopService();
         shopController = new ShopController(shopService);
         services.add(shopService);
 

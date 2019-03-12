@@ -6,7 +6,6 @@ import com.heroslender.herovender.data.ShopItem;
 import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +13,11 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 public class ShopService implements Service<Shop> {
-    private final FileConfiguration configuration;
     private final List<Shop> shops = new ArrayList<>();
-
-    public ShopService(FileConfiguration configuration) {
-        this.configuration = configuration;
-    }
 
     @Override
     public void init() {
-        final ConfigurationSection config = configuration.getConfigurationSection("shops");
+        final ConfigurationSection config = HeroVender.getInstance().getConfig().getConfigurationSection("shops");
         for (val shopId : config.getKeys(false)) {
             HeroVender.getInstance().getLogger().log(Level.INFO, "Loading the shop \"{0}\"...", shopId);
             val configShopItems = config.getStringList(shopId + ".items");
