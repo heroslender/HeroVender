@@ -1,8 +1,14 @@
-<div align="center">
-<img src="https://github.com/heroslender/HeroAPI/raw/master/logo.jpg" alt="heroslender"/>
-</div>
+<img src="https://avatars1.githubusercontent.com/u/16785313?s=96&v=4" alt="Heroslender" title="Heroslender" align="right" height="96" width="96"/>
 
 # HeroVender
+
+[![GitHub stars](https://img.shields.io/github/stars/heroslender/HeroVender.svg)](https://github.com/heroslender/HeroVender/stargazers)
+[![bStats Servers](https://img.shields.io/bstats/servers/3757.svg?color=1bcc1b)](https://bstats.org/plugin/bukkit/HeroVender)
+[![GitHub All Releases](https://img.shields.io/github/downloads/heroslender/HeroVender/total.svg?logoColor=fff)](https://github.com/heroslender/HeroVender/releases/latest)
+[![GitHub issues](https://img.shields.io/github/issues-raw/heroslender/HeroVender.svg?label=issues)](https://github.com/heroslender/HeroVender/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/heroslender/HeroVender.svg)](https://github.com/heroslender/HeroVender/commit)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+
 A plugin that allows your players to sell their inventory with a simple command or automatically using shift or when their inventory gets full:
 
 ## Commands
