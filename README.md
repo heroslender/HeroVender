@@ -11,6 +11,16 @@
 
 A plugin that allows your players to sell their inventory with a simple command or automatically using shift or when their inventory gets full:
 
+- [HeroVender](#herovender)
+  - [Commands](#commands)
+  - [Permissions](#permissions)
+  - [Placeholders](#placeholders)
+      - [Sell placeholders](#sell-placeholders)
+      - [Delay placeholders](#delay-placeholders)
+  - [Configuration](#configuration)
+      - [Default](#default)
+      - [Messages](#messages)
+
 ## Commands
 - `/sell` - Command used to sell the inventory
 - `/sell menu` - Command used to open the selling menu, that allows the player to activate shift-sell or auto-sell
