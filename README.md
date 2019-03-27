@@ -18,30 +18,35 @@ A plugin that allows your players to sell their inventory with a simple command 
       - [Sell placeholders](#sell-placeholders)
       - [Delay placeholders](#delay-placeholders)
   - [Configuration](#configuration)
-      - [Default](#default)
-      - [Messages](#messages)
+    - [Default](#default)
+    - [Messages](#messages)
+  - [API](#api)
+    - [Maven](#maven)
+    - [Events](#events)
 
 ## Commands
-- `/sell` - Command used to sell the inventory
-- `/sell menu` - Command used to open the selling menu, that allows the player to activate shift-sell or auto-sell
-- `/herovender reload` - Command used to reload the plugin(configuration and messages)
+-   `/sell` - Command used to sell the inventory
+-   `/sell menu` - Command used to open the selling menu, that allows the player to activate shift-sell or auto-sell
+-   `/herovender reload` - Command used to reload the plugin(configuration and messages)
 
 ## Permissions
-- `herovender.shiftsell` - Permission to activate the shift-sell
-- `herovender.autosell` - Permission to activate the auto-sell
+-   `herovender.shiftsell` - Permission to activate the shift-sell
+-   `herovender.autosell` - Permission to activate the auto-sell
 
 ## Placeholders
-- `:player:` - The player name
+-   `:player:` - The player name
 #### Sell placeholders
-- `:invoice-total:` - The total ammount of money the player is receiving for the items
-- `:invoice-total-formatted:` - The total ammount of money the player is receiving for the items, with prety formatting
+-   `:invoice-total:` - The total ammount of money the player is receiving for the items
+-   `:invoice-total-formatted:` - The total ammount of money the player is receiving for the items, with prety formatting
 - `:invoice-item-count:` - The total amount of items the player sold
 #### Delay placeholders
-- `:delay:` - Time the player has to wait to be able to sell again, in miliseconds
-- `:delay-formated:` - Time the player has to wait to be able to sell again, in seconds, formated with two decimals
+-   `:delay:` - Time the player has to wait to be able to sell again, in miliseconds
+-   `:delay-formated:` - Time the player has to wait to be able to sell again, in seconds, formated with two decimals
 
 ## Configuration
-#### Default
+
+### Default
+
 ```yaml
 commands:
   sell:
@@ -84,7 +89,9 @@ shops:
     - ROTTEN_FLESH 1 price:1500
     - CARROT_ITEM 1 price:5500
 ```
-#### Messages
+
+### Messages
+
 ```yaml
 sell:
   sold: '&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!'
@@ -102,3 +109,28 @@ sell:
       'on': LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&aActive|&7(Click_to_deactivate)
       'off': LEVER 1 name:&cAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&cInactive|&7(Click_to_activate)
 ```
+
+## API
+
+To get the plugin instance you can use the `HeroVender.getInstance()` method. 
+With the plugin instance you can access all controllers and use them.
+
+### Maven
+
+```xml
+<repository>
+    <id>heroslender-repo</id>
+    <url>https://nexus.heroslender.com/repository/maven-releases/</url>
+</repository>
+
+<dependency>
+  <groupId>com.heroslender</groupId>
+  <artifactId>HeroVender</artifactId>
+  <version>0.3.3</version>
+</dependency>
+```
+
+### Events
+
+-   `PlayerSellEvent` - Called when a player sells their inventory
+
