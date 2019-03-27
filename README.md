@@ -2,6 +2,7 @@
 
 # HeroVender
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/98c5f1bd76134d168989b8425cd17524)](https://app.codacy.com/app/heroslender/HeroVender?utm_source=github.com&utm_medium=referral&utm_content=heroslender/HeroVender&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub stars](https://img.shields.io/github/stars/heroslender/HeroVender.svg)](https://github.com/heroslender/HeroVender/stargazers)
 [![bStats Servers](https://img.shields.io/bstats/servers/3757.svg?color=1bcc1b)](https://bstats.org/plugin/bukkit/HeroVender)
 [![GitHub All Releases](https://img.shields.io/github/downloads/heroslender/HeroVender/total.svg?logoColor=fff)](https://github.com/heroslender/HeroVender/releases/latest)
