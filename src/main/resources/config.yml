@@ -3,6 +3,8 @@ commands:
     name: sell
     aliases:
       - sellall
+  sellmenu:
+    name: sellmenu
   autosell:
     name: autosell
     permisson-message: "&cYou don't have permission to use that."

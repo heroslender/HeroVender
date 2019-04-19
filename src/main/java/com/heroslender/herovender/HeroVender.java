@@ -1,9 +1,6 @@
 package com.heroslender.herovender;
 
-import com.heroslender.herovender.command.AutosellCommand;
-import com.heroslender.herovender.command.HerovenderCommand;
-import com.heroslender.herovender.command.SellCommand;
-import com.heroslender.herovender.command.ShiftsellCommand;
+import com.heroslender.herovender.command.*;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.controller.SellBonusController;
 import com.heroslender.herovender.controller.ShopController;
@@ -78,6 +75,7 @@ public final class HeroVender extends JavaPlugin {
         Menu.registar(this);
 
         new SellCommand(shopController);
+        new SellmenuCommand();
         new HerovenderCommand();
         new AutosellCommand();
         new ShiftsellCommand();
