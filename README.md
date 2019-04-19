@@ -7,6 +7,7 @@
 [![GitHub All Releases](https://img.shields.io/github/downloads/heroslender/HeroVender/total.svg?logoColor=fff)](https://github.com/heroslender/HeroVender/releases/latest)
 [![GitHub issues](https://img.shields.io/github/issues-raw/heroslender/HeroVender.svg?label=issues)](https://github.com/heroslender/HeroVender/issues)
 [![GitHub last commit](https://img.shields.io/github/last-commit/heroslender/HeroVender.svg)](https://github.com/heroslender/HeroVender/commit)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/98c5f1bd76134d168989b8425cd17524)](https://app.codacy.com/app/heroslender/HeroVender?utm_source=github.com&utm_medium=referral&utm_content=heroslender/HeroVender&utm_campaign=Badge_Grade_Dashboard)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
 A plugin that allows your players to sell their inventory with a simple command or automatically using shift or when their inventory gets full:
