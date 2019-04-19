@@ -16,7 +16,7 @@ public class ShiftsellCommand extends Command {
 
     @Override
     public boolean onCommand(CommandSender sender, String label, String[] args) throws HeroException {
-        if (!sender.hasPermission(Config.AUTOSELL_PERMISSION)) {
+        if (!sender.hasPermission(Config.SHIFTSELL_PERMISSION)) {
             sender.sendMessage(getPermissionMessage());
             return true;
         }
