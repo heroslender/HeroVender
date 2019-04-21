@@ -7,22 +7,31 @@ import com.heroslender.herovender.data.SellItem;
 import com.heroslender.herovender.data.Shop;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.event.PlayerSellEvent;
-import com.heroslender.herovender.utils.HeroException;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.service.ShopService;
+import com.heroslender.herovender.utils.HeroException;
 import com.heroslender.herovender.utils.NmsUtils;
 import lombok.NonNull;
 import lombok.val;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 
 public class ShopController {
     private final ShopService shopService;
 
     public ShopController(ShopService shopService) {
         this.shopService = shopService;
+    }
+
+    public Shop[] getShopsFor(User user) {
+        return shopService.get().stream()
+                .filter(shop -> shop.getPermission() == null || user.getPlayer().hasPermission(shop.getPermission()))
+                .sorted(Comparator.comparingInt(Shop::getPriority))
+                .toArray(Shop[]::new);
     }
 
     public Invoice sell(@NonNull final User user) throws HeroException {
@@ -32,8 +41,8 @@ public class ShopController {
     /**
      * Sell the player's inventory to the shops he has access to
      *
-     * @param user The player selling the inventory
-     * @param chat Send the message in the player chat?
+     * @param user      The player selling the inventory
+     * @param chat      Send the message in the player chat?
      * @param actionBar Send the message in the player action bar?
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
@@ -56,7 +65,7 @@ public class ShopController {
 
                 val toSend = messageBuilder.build(msg);
 
-                if (chat){
+                if (chat) {
                     user.sendMessage(toSend);
                 }
                 if (actionBar) {
@@ -75,10 +84,7 @@ public class ShopController {
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
     public Invoice sellSilent(@NonNull final User user) throws HeroException {
-        return sellSilent(user, shopService.get().stream()
-                .filter(shop -> shop.getPermission() == null || user.getPlayer().hasPermission(shop.getPermission()))
-                .sorted(Comparator.comparingInt(Shop::getPriority))
-                .toArray(Shop[]::new));
+        return sellSilent(user, getShopsFor(user));
     }
 
     /**
@@ -94,25 +100,28 @@ public class ShopController {
         val inventory = user.getInventory();
         val toSell = new ArrayList<SellItem>();
 
-        for (Shop shop : shops) {
-            for (int i = 0; i < inventory.getContents().length; i++) {
-                val itemStack = inventory.getItem(i);
-                val price = shop.getPrice(itemStack).orElse(-1D);
-                if (price <= 0) continue;
-                inventory.setItem(i, null);
+        for (int i = 0; i < inventory.getContents().length; i++) {
+            val itemStack = inventory.getItem(i);
+            val price = Arrays.stream(shops)
+                    .map(shop1 -> shop1.getPrice(itemStack))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .max(Double::compareTo)
+                    .orElse(-1D);
+            if (price <= 0) continue;
+            inventory.setItem(i, null);
 
-                int amount = itemStack.getAmount();
+            int amount = itemStack.getAmount();
 
-                // The item can be sold! Update them on the `to-sell` list
-                for (SellItem sellingItem : toSell) {
-                    if (sellingItem.getItemStack().isSimilar(itemStack)) {
-                        amount += sellingItem.getAmount();
-                        toSell.remove(sellingItem);
-                        break;
-                    }
+            // The item can be sold! Update them on the `to-sell` list
+            for (SellItem sellingItem : toSell) {
+                if (sellingItem.getItemStack().isSimilar(itemStack)) {
+                    amount += sellingItem.getAmount();
+                    toSell.remove(sellingItem);
+                    break;
                 }
-                toSell.add(new SellItem(itemStack, price, amount));
             }
+            toSell.add(new SellItem(itemStack, price, amount));
         }
 
         val preInvoice = new Invoice(toSell);
