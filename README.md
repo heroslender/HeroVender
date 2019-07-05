@@ -12,37 +12,47 @@
 
 A plugin that allows your players to sell their inventory with a simple command or automatically using shift or when their inventory gets full:
 
-- [HeroVender](#herovender)
-  - [Commands](#commands)
-  - [Permissions](#permissions)
-  - [Placeholders](#placeholders)
-      - [Sell placeholders](#sell-placeholders)
-      - [Delay placeholders](#delay-placeholders)
-  - [Configuration](#configuration)
-    - [Default](#default)
-    - [Messages](#messages)
-  - [API](#api)
-    - [Maven](#maven)
-    - [Events](#events)
+- [HeroVender](#HeroVender)
+  - [Commands](#Commands)
+  - [Permissions](#Permissions)
+  - [Placeholders](#Placeholders)
+      - [Sell placeholders](#Sell-placeholders)
+      - [Delay placeholders](#Delay-placeholders)
+  - [Configuration](#Configuration)
+    - [Default](#Default)
+    - [Messages](#Messages)
+  - [API](#API)
+    - [Maven](#Maven)
+    - [Events](#Events)
 
 ## Commands
--   `/sell` - Command used to sell the inventory
--   `/sell menu` - Command used to open the selling menu, that allows the player to activate shift-sell or auto-sell
--   `/herovender reload` - Command used to reload the plugin(configuration and messages)
+
+- `/sell` - Ssell the inventory
+- `/sellmenu` - Open the selling menu, that allows the player to activate shift-sell or auto-sell
+- `/shiftsell` - Toggle the Shift-Sell status
+- `/autosell` - Toggle the Auto-Sell status
+- `/herovender reload` - Reload the plugin(configuration and messages)
+- `/herovender item` - See the ID of the item the player is holding
 
 ## Permissions
--   `herovender.shiftsell` - Permission to activate the shift-sell
--   `herovender.autosell` - Permission to activate the auto-sell
+
+- `herovender.shiftsell` - Permission to activate the shift-sell
+- `herovender.autosell` - Permission to activate the auto-sell
 
 ## Placeholders
--   `:player:` - The player name
+
+- `:player:` - The player name
+
 #### Sell placeholders
--   `:invoice-total:` - The total ammount of money the player is receiving for the items
--   `:invoice-total-formatted:` - The total ammount of money the player is receiving for the items, with prety formatting
+
+- `:invoice-total:` - The total ammount of money the player is receiving for the items
+- `:invoice-total-formatted:` - The total ammount of money the player is receiving for the items, with prety formatting
 - `:invoice-item-count:` - The total amount of items the player sold
+
 #### Delay placeholders
--   `:delay:` - Time the player has to wait to be able to sell again, in miliseconds
--   `:delay-formated:` - Time the player has to wait to be able to sell again, in seconds, formated with two decimals
+
+- `:delay:` - Time the player has to wait to be able to sell again, in miliseconds
+- `:delay-formated:` - Time the player has to wait to be able to sell again, in seconds, formated with two decimals
 
 ## Configuration
 
@@ -133,5 +143,4 @@ With the plugin instance you can access all controllers and use them.
 
 ### Events
 
--   `PlayerSellEvent` - Called when a player sells their inventory
-
+- `PlayerSellEvent` - Called when a player sells their inventory
