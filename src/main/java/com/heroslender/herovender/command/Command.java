@@ -26,8 +26,8 @@ public abstract class Command extends org.bukkit.command.Command {
         val messageBuilder = new MessageBuilder();
         setUsage(messageBuilder.build(config.getString(defaultName + ".usage", "§c/" + getName())));
 
-        setPermission(messageBuilder.build(config.getString(defaultName + ".permisson")));
-        setPermissionMessage(messageBuilder.build(config.getString(defaultName + ".permisson-message")));
+        setPermission(messageBuilder.build(config.getString(defaultName + ".permission")));
+        setPermissionMessage(messageBuilder.build(config.getString(defaultName + ".permission-message")));
 
         NmsUtils.registerCommand(HeroVender.getInstance().getDescription().getName(), this);
     }
