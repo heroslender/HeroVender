@@ -27,7 +27,7 @@ A plugin that allows your players to sell their inventory with a simple command 
 
 ## Commands
 
-- `/sell` - Ssell the inventory
+- `/sell` - Sell the inventory
 - `/sellmenu` - Open the selling menu, that allows the player to activate shift-sell or auto-sell
 - `/shiftsell` - Toggle the Shift-Sell status
 - `/autosell` - Toggle the Auto-Sell status
@@ -131,13 +131,14 @@ With the plugin instance you can access all controllers and use them.
 ```xml
 <repository>
     <id>heroslender-repo</id>
-    <url>https://nexus.heroslender.com/repository/maven-releases/</url>
+    <url>https://nexus.heroslender.com/repository/maven-public/</url>
 </repository>
 
 <dependency>
-  <groupId>com.heroslender</groupId>
-  <artifactId>HeroVender</artifactId>
-  <version>0.3.3</version>
+    <groupId>com.heroslender</groupId>
+    <artifactId>HeroVender</artifactId>
+    <version>0.4.4</version>
+    <scope>provided</scope>
 </dependency>
 ```
 

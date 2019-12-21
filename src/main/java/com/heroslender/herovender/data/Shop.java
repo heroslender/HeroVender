@@ -50,7 +50,7 @@ public class Shop {
         }
 
         return items.stream()
-                .filter(item -> item.getItemStack().isSimilar(itemStack))
+                .filter(item -> item.isSimilar(itemStack))
                 .max(Comparator.comparingDouble(ShopItem::getPrice))
                 .map(ShopItem::getPrice);
     }
