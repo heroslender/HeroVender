@@ -22,7 +22,7 @@ public class NumberUtil {
     }
 
     private static String formatShort(double n, int iteration) {
-        double f = ((long) n / 100) / 10.0D;
+        double f = n / 1000.0D;
         return f < 1000 || iteration >= numberFormatShortSuffix.length - 1 ? format(f) + numberFormatShortSuffix[iteration] : formatShort(f, iteration + 1);
     }
 

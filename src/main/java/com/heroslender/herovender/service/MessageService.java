@@ -14,6 +14,7 @@ public class MessageService implements Service<String> {
     @Override
     public void init() {
         config.reload();
+        loadOrSaveDefault("number-formatting", "K;M;B;T;Q");
         loadOrSaveDefault("sell.sold", "&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!");
         loadOrSaveDefault("sell.no-items", "&cYou don't have any items that can be sold!");
         loadOrSaveDefault("sell.delay", "&cYou must wait :delay-formated: to sell again!");
