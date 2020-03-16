@@ -2,10 +2,7 @@ package com.heroslender.herovender.controller;
 
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.command.exception.SellDelayException;
-import com.heroslender.herovender.data.Invoice;
-import com.heroslender.herovender.data.SellItem;
-import com.heroslender.herovender.data.Shop;
-import com.heroslender.herovender.data.User;
+import com.heroslender.herovender.data.*;
 import com.heroslender.herovender.event.PlayerSellEvent;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.service.ShopService;
@@ -14,6 +11,7 @@ import com.heroslender.herovender.utils.NmsUtils;
 import lombok.NonNull;
 import lombok.val;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,15 +98,18 @@ public class ShopController {
         val inventory = user.getInventory();
         val toSell = new ArrayList<SellItem>();
 
+        ShopItem cached = null;
         for (int i = 0; i < inventory.getContents().length; i++) {
             val itemStack = inventory.getItem(i);
-            val price = Arrays.stream(shops)
-                    .map(shop1 -> shop1.getPrice(itemStack))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .max(Double::compareTo)
-                    .orElse(-1D);
-            if (price <= 0) continue;
+            if (cached == null || !cached.getItemStack().isSimilar(itemStack)) {
+                // Item isn't the same as the prev sold, so fetch it's price
+                val shopItemOpt = getShopItem(itemStack, shops);
+                if (!shopItemOpt.isPresent()) {
+                    continue;
+                }
+
+                cached = shopItemOpt.get();
+            }
             inventory.setItem(i, null);
 
             int amount = itemStack.getAmount();
@@ -121,7 +122,7 @@ public class ShopController {
                     break;
                 }
             }
-            toSell.add(new SellItem(itemStack, price, amount));
+            toSell.add(new SellItem(itemStack, cached.getPrice(), amount));
         }
 
         val preInvoice = new Invoice(toSell);
@@ -130,12 +131,34 @@ public class ShopController {
 
         val event = new PlayerSellEvent(user.getPlayer(), preInvoice);
         Bukkit.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled()) return null;
 
         val invoice = event.getInvoice();
-
         HeroVender.getInstance().getEconomy().depositPlayer(user.getPlayer(), invoice.getTotal());
 
         return invoice;
+    }
+
+    private Optional<ShopItem> getShopItem(ItemStack itemStack, Shop... shops) {
+        val available = new ArrayList<ShopItem>();
+        for (Shop shop : shops) {
+            shop.getShopItem(itemStack)
+                    .ifPresent(available::add);
+        }
+
+        if (available.isEmpty()) {
+            return Optional.empty();
+        } else if (available.size() == 1) {
+            return Optional.of(available.get(0));
+        }
+
+        ShopItem highest = available.get(0);
+        for (int i = 1; i < available.size(); i++) {
+            val item = available.get(i);
+            if (item.getPrice() > highest.getPrice()) {
+                highest = item;
+            }
+        }
+
+        return Optional.of(highest);
     }
 }
