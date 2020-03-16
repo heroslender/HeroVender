@@ -29,7 +29,7 @@ public class HeroStackDropsListener implements Listener {
 
     private void autoSell(final User user){
         try {
-            shopController.sell(user);
+            shopController.sell(user, false, true);
         } catch (SellDelayException ex) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(HeroVender.getInstance(), () -> autoSell(user), ex.getDelay() / 50 + 1);
         } catch (HeroException ex) {

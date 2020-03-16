@@ -22,7 +22,7 @@ public class ShiftSellListener implements Listener {
 
             if (user.isShiftSellActive()) {
                 try {
-                    shopController.sell(user);
+                    shopController.sell(user, false, true);
                 } catch (HeroException ex) {
                     user.sendMessage(ex.getMessage());
                 }
