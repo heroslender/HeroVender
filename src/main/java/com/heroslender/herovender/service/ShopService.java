@@ -34,11 +34,11 @@ public class ShopService implements Service<Shop> {
                     continue;
                 }
 
-                HeroVender.getInstance().getLogger().log(Level.INFO, " - [{0}] {1} ${2}",
-                        new Object[]{shopId,
-                                metaItem.getItemStack().getType().name().toLowerCase().replace('_', ' '),
-                                metaItem.getPrice()});
-                items.add(new ShopItem(metaItem.getItemStack(), metaItem.getPrice()));
+                val shopItem = new ShopItem(metaItem.getItemStack(), metaItem.getPrice(), metaItem.isIgnoreDurability());
+                HeroVender.getInstance().getLogger().log(Level.INFO, " - [{0}] {1}",
+                        new Object[]{shopId, shopItem});
+
+                items.add(shopItem);
             }
 
             val permission = config.getString(shopId + ".permission");

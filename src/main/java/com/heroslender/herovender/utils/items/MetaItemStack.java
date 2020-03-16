@@ -2,6 +2,7 @@ package com.heroslender.herovender.utils.items;
 
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.utils.NumberUtil;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
@@ -55,6 +56,7 @@ public class MetaItemStack {
     private int power = 1;
     private int duration = 120;
     private double price = -1;
+    @Getter private boolean ignoreDurability = false;
 
     public MetaItemStack(final ItemStack stack) {
         this.stack = stack.clone();
@@ -182,6 +184,8 @@ public class MetaItemStack {
 
         if (split.length > 1 && split[0].equalsIgnoreCase("price")) {
             price = NumberUtil.getValidMoney(split[1]);
+        } else if (split[0].equalsIgnoreCase("ignore-durability")) {
+            ignoreDurability = split.length <= 1 || Boolean.parseBoolean(split[1]);
         } else if (split.length > 1 && split[0].equalsIgnoreCase("name")) {
             final String displayName = ChatColor.translateAlternateColorCodes('&', split[1].replace('_', ' '));
             final ItemMeta meta = stack.getItemMeta();
@@ -196,7 +200,7 @@ public class MetaItemStack {
             meta.setLore(lore);
             stack.setItemMeta(meta);
         } else if (split[0].equalsIgnoreCase("unbreakable")) {
-            boolean value = split.length > 1 ? Boolean.valueOf(split[1]) : true;
+            boolean value = split.length <= 1 || Boolean.parseBoolean(split[1]);
             setUnbreakable(stack, value);
         } else if (split.length > 1 && (split[0].equalsIgnoreCase("player") || split[0].equalsIgnoreCase("owner")) && stack.getType() == Material.SKULL_ITEM) {
             stack.setDurability((short) 3);
