@@ -9,21 +9,17 @@ import com.heroslender.herovender.service.ShopService;
 import com.heroslender.herovender.utils.HeroException;
 import com.heroslender.herovender.utils.NmsUtils;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Optional;
 
+@RequiredArgsConstructor
 public class ShopController {
     private final ShopService shopService;
-
-    public ShopController(ShopService shopService) {
-        this.shopService = shopService;
-    }
 
     public Shop[] getShopsFor(User user) {
         return shopService.get().stream()
@@ -45,32 +41,36 @@ public class ShopController {
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
     public Invoice sell(@NonNull final User user, final boolean chat, final boolean actionBar) throws HeroException {
+//        long start = System.currentTimeMillis();
         val invoice = sellSilent(user);
-        if (invoice == null) {
-            // PlayerSellEvent was cancelled
-            return null;
-        }
+//        System.out.println("sellSilent took " + (System.currentTimeMillis() - start) + " ms.");
 
+//        start = System.currentTimeMillis();
         if (chat || actionBar) {
-            val message = invoice.getItems().isEmpty()
-                    ? HeroVender.getInstance().getMessageController().getMessage("sell.no-items")
-                    : HeroVender.getInstance().getMessageController().getMessage("sell.sold");
+            String toSend;
+            if (invoice == null) {
+                toSend = HeroVender.getInstance().getMessageController().getMessage("sell.no-items").orElse(null);
+            } else {
+                toSend = HeroVender.getInstance().getMessageController().getMessage("sell.sold").orElse(null);
+                if (toSend != null) {
+                    val messageBuilder = new MessageBuilder()
+                            .withPlaceholder(user)
+                            .withPlaceholder(invoice);
 
-            message.ifPresent(msg -> {
-                MessageBuilder messageBuilder = new MessageBuilder()
-                        .withPlaceholder(user)
-                        .withPlaceholder(invoice);
+                    toSend = messageBuilder.build(toSend);
+                }
+            }
 
-                val toSend = messageBuilder.build(msg);
-
+            if (toSend != null) {
                 if (chat) {
                     user.sendMessage(toSend);
                 }
                 if (actionBar) {
                     NmsUtils.sendActionBar(toSend, user.getPlayer());
                 }
-            });
+            }
         }
+//        System.out.println("sell message took " + (System.currentTimeMillis() - start) + " ms.");
 
         return invoice;
     }
@@ -101,15 +101,15 @@ public class ShopController {
         ShopItem cached = null;
         for (int i = 0; i < inventory.getContents().length; i++) {
             val itemStack = inventory.getItem(i);
-            if (cached == null || !cached.getItemStack().isSimilar(itemStack)) {
-                // Item isn't the same as the prev sold, so fetch it's price
+            if (cached == null || !cached.isSimilar(itemStack)) {
                 val shopItemOpt = getShopItem(itemStack, shops);
-                if (!shopItemOpt.isPresent()) {
+                if (shopItemOpt == null) {
                     continue;
                 }
 
-                cached = shopItemOpt.get();
+                cached = shopItemOpt;
             }
+
             inventory.setItem(i, null);
 
             int amount = itemStack.getAmount();
@@ -125,12 +125,16 @@ public class ShopController {
             toSell.add(new SellItem(itemStack, cached.getPrice(), amount));
         }
 
+        if (toSell.isEmpty()) {
+            return null;
+        }
+
         val preInvoice = new Invoice(toSell);
 
         user.getSellBonus().ifPresent(bonus -> preInvoice.getBonuses().add(bonus));
 
         val event = new PlayerSellEvent(user.getPlayer(), preInvoice);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
 
         val invoice = event.getInvoice();
         HeroVender.getInstance().getEconomy().depositPlayer(user.getPlayer(), invoice.getTotal());
@@ -138,17 +142,19 @@ public class ShopController {
         return invoice;
     }
 
-    private Optional<ShopItem> getShopItem(ItemStack itemStack, Shop... shops) {
+    private ShopItem getShopItem(ItemStack itemStack, Shop... shops) {
         val available = new ArrayList<ShopItem>();
         for (Shop shop : shops) {
-            shop.getShopItem(itemStack)
-                    .ifPresent(available::add);
+            val item = shop.getShopItem(itemStack);
+            if (item != null) {
+                available.add(item);
+            }
         }
 
         if (available.isEmpty()) {
-            return Optional.empty();
+            return null;
         } else if (available.size() == 1) {
-            return Optional.of(available.get(0));
+            return available.get(0);
         }
 
         ShopItem highest = available.get(0);
@@ -159,6 +165,6 @@ public class ShopController {
             }
         }
 
-        return Optional.of(highest);
+        return highest;
     }
 }

@@ -43,17 +43,17 @@ public class Shop {
         }
     }
 
-    public Optional<ShopItem> getShopItem(final ItemStack itemStack) {
+    public ShopItem getShopItem(final ItemStack itemStack) {
         if (itemStack == null) {
-            return Optional.empty();
+            return null;
         }
 
         for (ShopItem item : items) {
             if (item.getItemStack().isSimilar(itemStack)) {
-                return Optional.of(item);
+                return item;
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 }

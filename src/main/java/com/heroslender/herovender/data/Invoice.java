@@ -31,9 +31,28 @@ public class Invoice {
      * @return Total value
      */
     public double getTotalClean() {
-        return getItems().stream()
-                .mapToDouble(sellItem -> sellItem.getPrice() * sellItem.getAmount())
-                .sum();
+        double total = 0;
+
+        for (SellItem item : getItems()) {
+            total += item.getPrice() * item.getAmount();
+        }
+
+        return total;
+    }
+
+    /**
+     * Get the total bonus percentage to add to the total value.
+     *
+     * @return bonus percentage
+     */
+    private double getBonusesTotal() {
+        double total = 0;
+
+        for (SellBonus bonus : getBonuses()) {
+            total += bonus.getBonus();
+        }
+
+        return total;
     }
 
     /**
@@ -42,6 +61,6 @@ public class Invoice {
      * @return Total value
      */
     public double getTotal() {
-        return getTotalClean() * (1 + getBonuses().stream().mapToDouble(SellBonus::getBonus).sum());
+        return getTotalClean() * (1 + getBonusesTotal());
     }
 }
