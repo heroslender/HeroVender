@@ -54,6 +54,11 @@ A plugin that allows your players to sell their inventory with a simple command 
 - `:delay:` - Time the player has to wait to be able to sell again, in miliseconds
 - `:delay-formated:` - Time the player has to wait to be able to sell again, in seconds, formated with two decimals
 
+#### Prices menu placeholders
+
+- `:price:` - The unit price of the item
+- `:price-formatted:` - The unit price of the item, formated with two decimals
+
 ## Configuration
 
 ### Default
@@ -119,6 +124,15 @@ sell:
       no-permission: LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7(Insufficient_permissions)
       'on': LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&aActive|&7(Click_to_deactivate)
       'off': LEVER 1 name:&cAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&cInactive|&7(Click_to_activate)
+prices:
+  menu:
+    title: "Sell Prices"
+    item:
+      lore:
+      - ''
+      - "&7Price per unit: &a$&f:price-formatted:"
+      - ''
+      - ':lore:'
 ```
 
 ## API
@@ -137,7 +151,7 @@ With the plugin instance you can access all controllers and use them.
 <dependency>
     <groupId>com.heroslender</groupId>
     <artifactId>HeroVender</artifactId>
-    <version>0.4.4</version>
+    <version>1.0.0</version>
     <scope>provided</scope>
 </dependency>
 ```
