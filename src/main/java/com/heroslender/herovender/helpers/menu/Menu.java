@@ -1,6 +1,7 @@
 package com.heroslender.herovender.helpers.menu;
 
 import com.heroslender.herovender.utils.HeroException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,12 +15,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class Menu {
-    private final String nome;
-    private MenuItem[] items;
+    @Getter private final String nome;
+    @Getter private MenuItem[] items;
 
     public Menu(String nome, int tamanho) {
         this.nome = nome;
         items = new MenuItem[tamanho];
+    }
+
+    public Menu(String nome, MenuSize tamanho) {
+        this(nome, tamanho.getSlots());
     }
 
     public static void registar(Plugin plugin) {
@@ -57,6 +62,10 @@ public class Menu {
         }
     }
 
+    public int getSize() {
+        return items.length;
+    }
+
     public void open(HumanEntity humanEntity) {
         MenuHolder holder = new MenuHolder(this);
         Inventory inventory = Bukkit.createInventory(holder, items.length, nome);
@@ -81,6 +90,37 @@ public class Menu {
 
     public interface MenuItemClick {
         void onClick(InventoryClickEvent e) throws HeroException;
+    }
+
+    public enum MenuSize {
+        ONE_LINE(9),
+        TWO_LINES(18),
+        THREE_LINES(27),
+        FOUR_LINES(36),
+        FIVE_LINES(45),
+        SIX_LINES(54);
+
+        private final int slots;
+
+        MenuSize(int slots) {
+            this.slots = slots;
+        }
+
+        public int getSlots() {
+            return slots;
+        }
+
+        public static MenuSize of(int size) {
+            MenuSize curr = SIX_LINES;
+
+            for (MenuSize menuSize : values()) {
+                if (size < menuSize.getSlots() && curr.getSlots() > menuSize.getSlots()) {
+                    curr = menuSize;
+                }
+            }
+
+            return curr;
+        }
     }
 
     @RequiredArgsConstructor

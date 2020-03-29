@@ -33,7 +33,7 @@ public class Shop {
                     // Lookup if there's a similar item already registered here
                     for (ShopItem shopItem : new ArrayList<>(items)/* prevent a ConcurrentModificationException */) {
                         // if they're similar, lets get the highest value and update here
-                        if (shopItem.getItemStack().isSimilar(parentShopitem.getItemStack()) && shopItem.getPrice() < parentShopitem.getPrice()) {
+                        if (shopItem.isSimilar(parentShopitem.getItemStack()) && shopItem.getPrice() < parentShopitem.getPrice()) {
                             items.remove(shopItem);
                             items.add(parentShopitem);
                         }
@@ -49,7 +49,7 @@ public class Shop {
         }
 
         for (ShopItem item : items) {
-            if (item.getItemStack().isSimilar(itemStack)) {
+            if (item.isSimilar(itemStack)) {
                 return item;
             }
         }

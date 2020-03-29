@@ -2,6 +2,7 @@ package com.heroslender.herovender.controller;
 
 import com.heroslender.herovender.service.MessageService;
 
+import java.util.List;
 import java.util.Optional;
 
 public class MessageController {
@@ -13,5 +14,9 @@ public class MessageController {
 
     public Optional<String> getMessage(final String messageId) {
         return messageService.getById(messageId);
+    }
+
+    public Optional<List<String>> getMessages(final String messageId) {
+        return messageService.getListById(messageId);
     }
 }

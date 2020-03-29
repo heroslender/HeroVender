@@ -17,6 +17,10 @@ public class ShopItem {
         this(itemStack, price, false);
     }
 
+    public ItemStack getItemStack() {
+        return itemStack.clone();
+    }
+
     /**
      * This method is the same as equals, but does not consider stack size
      * (amount).

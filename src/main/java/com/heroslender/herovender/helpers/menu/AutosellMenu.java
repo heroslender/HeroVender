@@ -7,6 +7,7 @@ import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,28 +20,43 @@ public class AutosellMenu extends Menu {
         this.messageController = messageController;
         this.user = user;
 
-        val sellItemString = messageController.getMessage("sell.menu.sell").orElse(null);
-
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
-        val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-        ItemStack itemStack;
-        if (metaItemStack == null) {
-            itemStack = new HItem(Material.DOUBLE_PLANT, "§aSell", "", "§7Click here to sell your inventory!");
-        } else {
-            itemStack = metaItemStack.getItemStack();
-        }
+        val sellItem = getItemStack(
+                "sell.menu.sell",
+                messageBuilder,
+                new HItem(Material.DOUBLE_PLANT, "§aSell", "", "§7Click here to sell your inventory!")
+        );
 
-        setItem(10, itemStack, clickEvent -> {
+        setItem(10, sellItem, clickEvent -> {
             HeroVender.getInstance().getShopController().sell(user);
             clickEvent.getWhoClicked().closeInventory();
+        });
+
+
+        val pricesItem = getItemStack(
+                "sell.menu.sell-prices",
+                messageBuilder,
+                new HItem(Material.ANVIL, "§aPrices", "", "§7Click here to see your sell prices!")
+        );
+        setItem(12, pricesItem, clickEvent -> {
+            Bukkit.getScheduler().runTaskAsynchronously(HeroVender.getInstance(), () ->
+                    new ShopPricesMenu(messageController, user)
+            );
         });
 
         setItem(14, getShiftSellMenuItem());
         setItem(16, getAutoSellMenuItem());
 
         open(user.getPlayer());
+    }
+
+    private ItemStack getItemStack(String messageId, MessageBuilder builder, ItemStack defaultItem) {
+        val sellItemString = messageController.getMessage(messageId).orElse(null);
+        val metaItemStack = MetaItemStack.getFromString(builder.build(sellItemString));
+
+        return metaItemStack == null ? defaultItem : metaItemStack.getItemStack();
     }
 
     private MenuItem getShiftSellMenuItem() {
