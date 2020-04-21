@@ -18,7 +18,7 @@ public class NumberUtil {
     }
 
     public static String formatShort(double value) {
-        return formatShort(value, 0);
+        return value < 1000 ?  format(value) : formatShort(value, 0);
     }
 
     private static String formatShort(double n, int iteration) {

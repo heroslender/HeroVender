@@ -25,7 +25,6 @@ public class ShopPricesMenu extends Menu {
     public ShopPricesMenu(final MessageController messageController, final User user, List<ShopItem> shopItems) {
         super(messageController.getMessage("prices.menu.title").orElse("Sell Prices"), MenuSize.of(shopItems.size() + 18));
 
-
         for (int i = 0; i < getSize(); i++) {
             if (i < 9 || i >= getSize() - 9) {
                 setItem(i, BORDER_GLASS);
