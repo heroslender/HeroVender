@@ -1,5 +1,6 @@
 package com.heroslender.herovender.helpers;
 
+import com.google.common.collect.Lists;
 import com.heroslender.herovender.data.Invoice;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.utils.NumberUtil;
@@ -9,15 +10,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MessageBuilder {
-    private static final Map<String, String> defaultPlaceholder = Collections.emptyMap();
-    private final Map<String, String> placeholders;
+    private final List<String> placeholders;
+    private final List<String> replaces;
 
     public MessageBuilder() {
-        placeholders = new HashMap<>(defaultPlaceholder);
+        placeholders = Lists.newArrayList();
+        replaces = Lists.newArrayList();
     }
 
     public MessageBuilder withPlaceholder(User user) {
@@ -55,23 +57,72 @@ public class MessageBuilder {
         if (replacer == null || replacer.isEmpty() || placeholder == null)
             return this;
 
-        if (replacer.startsWith(":") && replacer.endsWith(":"))
-            placeholders.put(replacer, placeholder);
-        else
-            placeholders.put(":" + replacer + ":", placeholder);
+        StringBuilder builder = new StringBuilder();
+        if (replacer.charAt(0) != ':') {
+            builder.append(':');
+        }
+        builder.append(replacer);
+        if (replacer.charAt(replacer.length() - 1) != ':') {
+            builder.append(':');
+        }
+
+        placeholders.add(builder.toString());
+        replaces.add(placeholder);
 
         return this;
     }
 
-    public String build(String message) {
-        if (message == null) {
-            return null;
+    public String build(String text) {
+        if (text == null || text.length() == 0 || placeholders.isEmpty()) {
+            return text;
         }
 
-        for (Map.Entry<String, String> placeholder : placeholders.entrySet()) {
-            message = message.replace(placeholder.getKey(), placeholder.getValue());
+
+        val buff = new StringBuilder(text.length());
+        boolean[] toIgnore = new boolean[placeholders.size()];
+        int start = 0;
+        int tempIndex;
+        int textIndex;
+        int replaceIndex = -1;
+        int replaceLength = -1;
+
+        while(true) {
+            textIndex = -1;
+
+            for (int i = 0; i < placeholders.size(); i++) {
+                if (toIgnore[i]) {
+                    continue;
+                }
+
+                val placeholder = placeholders.get(i);
+                tempIndex = text.indexOf(placeholder, start);
+                if (tempIndex == -1) {
+                    toIgnore[i] = true;
+                } else if (textIndex == -1 || tempIndex < textIndex) {
+                    textIndex = tempIndex;
+                    replaceIndex = i;
+                    replaceLength = placeholder.length();
+                }
+            }
+
+            if (textIndex == -1) {
+                break;
+            }
+
+            for (int i = start; i < textIndex; i++) {
+                buff.append(text.charAt(i));
+            }
+
+            val replacement = replaces.get(replaceIndex);
+            buff.append(replacement);
+
+            start = textIndex + replaceLength;
         }
 
-        return ChatColor.translateAlternateColorCodes('&', message);
+        for (int i = start; i < text.length(); i++) {
+            buff.append(text.charAt(i));
+        }
+
+        return ChatColor.translateAlternateColorCodes('&', buff.toString());
     }
 }
