@@ -47,30 +47,25 @@ public class User {
 
     public void checkDelay() throws SellDelayException {
         val delay = HeroVender.getInstance().getUserController().getDelay(getPlayer());
+        if (delay <= 0) {
+            return;
+        }
 
         val releaseTimestamp = sellDelay + delay;
-        if (delay > 0 && releaseTimestamp > System.currentTimeMillis()) {
-            val toWait = releaseTimestamp - System.currentTimeMillis();
-            val messageBuilder = new MessageBuilder()
-                    .withPlaceholder("delay", toWait)
-                    .withPlaceholder("delay-formated", NumberUtil.format(toWait / 1000D))
-                    .withPlaceholder(this);
-            val message = HeroVender.getInstance().getMessageController().getMessage("sell.delay").orElse("&cYou must wait :delay: to sell again!");
-
-            throw new SellDelayException(messageBuilder.build(message), toWait);
+        if (releaseTimestamp > System.currentTimeMillis()) {
+            throw new SellDelayException(this, releaseTimestamp - System.currentTimeMillis());
         }
 
         setSellDelay(System.currentTimeMillis());
     }
 
-    public int getEmptySlotsCount() {
-        int count = 0;
-        val invContents = getInventory().getContents();
-
-        for (final ItemStack item : invContents) {
-            if (item == null) count++;
+    public boolean isAbleToSell() {
+        for (ItemStack stack : getInventory().getContents()) {
+            if (stack == null) {
+                return false;
+            }
         }
 
-        return count;
+        return true;
     }
 }

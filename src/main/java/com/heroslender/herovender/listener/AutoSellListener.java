@@ -23,7 +23,7 @@ public class AutoSellListener implements Listener {
         if (!e.isCancelled()) {
             val user = userController.getOrCreate(e.getPlayer());
 
-            if (user.isAutoSellActive() && user.getEmptySlotsCount() <= 1) {
+            if (user.isAutoSellActive() && user.isAbleToSell()) {
                 autoSell(user);
             }
         }

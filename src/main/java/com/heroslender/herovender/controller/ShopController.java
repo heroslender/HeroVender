@@ -101,6 +101,10 @@ public class ShopController {
         ShopItem cached = null;
         for (int i = 0; i < inventory.getContents().length; i++) {
             val itemStack = inventory.getItem(i);
+            if (itemStack == null) {
+                continue;
+            }
+
             if (cached == null || !cached.isSimilar(itemStack)) {
                 val shopItemOpt = getShopItem(itemStack, shops);
                 if (shopItemOpt == null) {
@@ -116,7 +120,7 @@ public class ShopController {
 
             // The item can be sold! Update them on the `to-sell` list
             for (SellItem sellingItem : toSell) {
-                if (sellingItem.getItemStack().isSimilar(itemStack)) {
+                if (sellingItem.isSimilar(itemStack)) {
                     amount += sellingItem.getAmount();
                     toSell.remove(sellingItem);
                     break;

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.val;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -34,20 +36,23 @@ public class UserService implements Service<User> {
 
     @Override
     public Optional<User> getById(String id) {
-        val user = users.get(id);
-        if (user == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(user);
+        return Optional.ofNullable(get(id));
     }
 
-    public User getOrCreate(final Player player) {
-        return getById(player.getName()).orElseGet(() -> {
-            val user = new User(player);
+    @Nullable
+    public User get(@NotNull String id) {
+        return users.get(id);
+    }
+
+    @NotNull
+    public User getOrCreate(@NotNull final Player player) {
+        User user = get(player.getName());
+        if (user == null) {
+            user = new User(player);
             users.put(player.getName(), user);
-            return user;
-        });
+        }
+
+        return user;
     }
 
     public void remove(final String id) {
