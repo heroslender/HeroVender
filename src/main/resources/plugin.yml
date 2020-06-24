@@ -3,6 +3,6 @@ version: ${project.version}
 main: com.heroslender.herovender.HeroVender
 authors: [Heroslender]
 depend: [Vault]
-softdepend: [HeroStackDrops]
+softdepend: [HeroStackDrops, AutoPickup]
 description: Plugin de /vender com bolsa de valores
 website: www.heroslender.cf/plugins/HeroVender
