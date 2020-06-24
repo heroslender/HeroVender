@@ -7,8 +7,9 @@ import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.controller.UserController;
 import com.heroslender.herovender.helpers.CustomFileConfiguration;
 import com.heroslender.herovender.helpers.menu.Menu;
-import com.heroslender.herovender.listener.AutoSellListener;
-import com.heroslender.herovender.listener.HeroStackDropsListener;
+import com.heroslender.herovender.listener.autosell.AutoPickupListener;
+import com.heroslender.herovender.listener.autosell.AutoSellListener;
+import com.heroslender.herovender.listener.autosell.HeroStackDropsListener;
 import com.heroslender.herovender.listener.ShiftSellListener;
 import com.heroslender.herovender.listener.UserListener;
 import com.heroslender.herovender.service.*;
@@ -81,10 +82,13 @@ public final class HeroVender extends JavaPlugin {
         new ShiftsellCommand();
 
         if (getServer().getPluginManager().isPluginEnabled("HeroStackDrops")) {
-            registerEvent(new HeroStackDropsListener(userController, shopController));
+            registerEvent(new HeroStackDropsListener());
+        }
+        if (getServer().getPluginManager().isPluginEnabled("AutoPickup")) {
+            registerEvent(new AutoPickupListener());
         }
         registerEvent(new ShiftSellListener(userController, shopController));
-        registerEvent(new AutoSellListener(userController, shopController));
+        registerEvent(new AutoSellListener());
         registerEvent(new UserListener(userController));
 
         new Metrics(this);

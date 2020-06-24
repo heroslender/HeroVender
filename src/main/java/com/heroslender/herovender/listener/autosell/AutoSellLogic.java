@@ -1,4 +1,4 @@
-package com.heroslender.herovender.listener;
+package com.heroslender.herovender.listener.autosell;
 
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.command.exception.SellDelayException;
@@ -6,26 +6,23 @@ import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.controller.UserController;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.utils.HeroException;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-@RequiredArgsConstructor
-public class AutoSellListener implements Listener {
-    private final UserController userController;
-    private final ShopController shopController;
+import java.util.Objects;
 
-    @EventHandler
-    private void onPlayerPickupItem(final PlayerPickupItemEvent e) {
-        if (!e.isCancelled()) {
-            val user = userController.getOrCreate(e.getPlayer());
+public class AutoSellLogic {
+    protected final UserController userController = HeroVender.getInstance().getUserController();
+    protected final ShopController shopController = HeroVender.getInstance().getShopController();
 
-            if (user.isAutoSellActive() && user.isAbleToSell()) {
-                autoSell(user);
-            }
+    protected void autoSell(@NotNull final Player player) {
+        Objects.requireNonNull(player, "player is null");
+
+        final User user = userController.getOrCreate(player);
+
+        if (user.isAutoSellActive() && user.isAbleToSell()) {
+            autoSell(user);
         }
     }
 
