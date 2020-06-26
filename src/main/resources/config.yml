@@ -16,7 +16,7 @@ commands:
     permisson: 'herovender.admin'
     usage: '&bHeroVender &7- &a/herovender <reload>'
 autosell:
-  strategy: "FULL_INVENTORY"
+  strategy: "PICKUP_ITEM"
   settings:
     require-inventory-full: true
     timer-delay: 10

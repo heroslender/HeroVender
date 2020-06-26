@@ -75,8 +75,8 @@ commands:
 # Configure the auto-sell
 autosell:
   # Strategy to use for auto-selling, available strategies:
-  # https://github.com/heroslender/HeroVender/tree/master/src/main/java/com/heroslender/herovender/AutoSellStategy.java
-  strategy: "FULL_INVENTORY"
+  # https://github.com/heroslender/HeroVender/tree/master/src/main/java/com/heroslender/herovender/autosell/AutoSellStategy.java
+  strategy: "PICKUP_ITEM"
   settings:
     # Is it required for the inventory to be full in order to sell?
     require-inventory-full: true
