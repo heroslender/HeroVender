@@ -8,6 +8,7 @@ import com.heroslender.herovender.controller.UserController;
 import com.heroslender.herovender.helpers.CustomFileConfiguration;
 import com.heroslender.herovender.helpers.menu.Menu;
 import com.heroslender.herovender.listener.autosell.AutoPickupListener;
+import com.heroslender.herovender.listener.autosell.AutoPickupOldListener;
 import com.heroslender.herovender.listener.autosell.AutoSellListener;
 import com.heroslender.herovender.listener.autosell.HeroStackDropsListener;
 import com.heroslender.herovender.listener.ShiftSellListener;
@@ -16,6 +17,8 @@ import com.heroslender.herovender.service.*;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -81,12 +84,38 @@ public final class HeroVender extends JavaPlugin {
         new AutosellCommand();
         new ShiftsellCommand();
 
-        if (getServer().getPluginManager().isPluginEnabled("HeroStackDrops")) {
+        final PluginManager pluginManager = getServer().getPluginManager();
+        final Plugin heroStackDrops = pluginManager.getPlugin("HeroStackDrops");
+        if (heroStackDrops != null && heroStackDrops.isEnabled()) {
+            getLogger().log(
+                    Level.INFO,
+                    "HeroStackDrops encontrado(v{0}), ativando compatibilidade.",
+                    heroStackDrops.getDescription().getVersion()
+            );
             registerEvent(new HeroStackDropsListener());
         }
-        if (getServer().getPluginManager().isPluginEnabled("AutoPickup")) {
-            registerEvent(new AutoPickupListener());
+
+        final Plugin autoPickup = pluginManager.getPlugin("AutoPickup");
+        if (autoPickup != null && autoPickup.isEnabled()) {
+            getLogger().log(
+                    Level.INFO,
+                    "AutoPickup encontrado(v{0}), ativando compatibilidade.",
+                    autoPickup.getDescription().getVersion()
+            );
+
+            Listener autoPickupListener;
+            try {
+                // Test for the AutoPickup version, older versions have different package
+                Class.forName("com.philderbeast.autopickup.API.DropToInventoryEvent");
+
+                autoPickupListener = new AutoPickupListener();
+            } catch (ClassNotFoundException e) {
+                autoPickupListener = new AutoPickupOldListener();
+            }
+
+            registerEvent(autoPickupListener);
         }
+
         registerEvent(new ShiftSellListener(userController, shopController));
         registerEvent(new AutoSellListener());
         registerEvent(new UserListener(userController));

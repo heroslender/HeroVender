@@ -6,7 +6,7 @@
 
     <groupId>com.heroslender</groupId>
     <artifactId>HeroVender</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
 
     <name>HeroVender</name>
@@ -83,6 +83,13 @@
             <groupId>com.philderbeast.autopickup</groupId>
             <artifactId>autopickup</artifactId>
             <version>5.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>me.MnMaxon</groupId>
+            <artifactId>autopickup</artifactId>
+            <version>3.9</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Libs/AutoPickup.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
