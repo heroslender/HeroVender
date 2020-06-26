@@ -58,14 +58,4 @@ public class User {
 
         setSellDelay(System.currentTimeMillis());
     }
-
-    public boolean isAbleToSell() {
-        for (ItemStack stack : getInventory().getContents()) {
-            if (stack == null) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }

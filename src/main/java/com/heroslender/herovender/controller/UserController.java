@@ -13,11 +13,11 @@ public class UserController {
         return userService;
     }
 
-    public User getOrCreate(Player player) {
+    public synchronized User getOrCreate(Player player) {
         return userService.getOrCreate(player);
     }
 
-    public int getDelay(Player player) {
+    public synchronized int getDelay(Player player) {
         int delay = -1;
 
         for (Map.Entry<String, Integer> entry : userService.getDelays().entrySet()) {
@@ -36,7 +36,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    public void remove(final String id) {
+    public synchronized void remove(final String id) {
         userService.remove(id);
     }
 }

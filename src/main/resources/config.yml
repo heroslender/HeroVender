@@ -15,6 +15,11 @@ commands:
     name: herovender
     permisson: 'herovender.admin'
     usage: '&bHeroVender &7- &a/herovender <reload>'
+autosell:
+  strategy: "FULL_INVENTORY"
+  settings:
+    require-inventory-full: true
+    timer-delay: 10
 bonus:
   1:
     permission: herovender.vip

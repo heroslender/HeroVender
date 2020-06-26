@@ -72,6 +72,16 @@ commands:
   herovender:
     name: herovender
     usage: '&bHeroVender &7- &a/herovender <reload>'
+# Configure the auto-sell
+autosell:
+  # Strategy to use for auto-selling, available strategies:
+  # https://github.com/heroslender/HeroVender/tree/master/src/main/java/com/heroslender/herovender/AutoSellStategy.java
+  strategy: "FULL_INVENTORY"
+  settings:
+    # Is it required for the inventory to be full in order to sell?
+    require-inventory-full: true
+    # If the strategy is set to TIMER, this is the delay to use between checks
+    timer-delay: 10
 bonus:
   1:
     permission: herovender.vip

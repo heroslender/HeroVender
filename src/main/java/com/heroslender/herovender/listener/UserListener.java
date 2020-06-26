@@ -18,10 +18,8 @@ public class UserListener implements Listener {
         userController.remove(e.getPlayer().getName());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerKick(PlayerKickEvent e) {
-        if (!e.isCancelled()) {
-            userController.remove(e.getPlayer().getName());
-        }
+        userController.remove(e.getPlayer().getName());
     }
 }
