@@ -28,7 +28,7 @@ public class AutoSellManager {
         }
 
         this.autoSellStrategy = AutoSellStategy.valueOf(
-                getConfig().getString("autosell.strategy", "FULL_INVENTORY").toUpperCase(Locale.ROOT)
+                getConfig().getString("autosell.strategy", "PICKUP_ITEM").toUpperCase(Locale.ROOT)
         );
         this.autoSellInvFull = getConfig().getBoolean("autosell.settings.require-inventory-full", true);
 

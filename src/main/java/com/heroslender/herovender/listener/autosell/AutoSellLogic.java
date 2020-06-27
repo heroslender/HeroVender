@@ -21,7 +21,7 @@ public class AutoSellLogic {
     protected void autoSell(@NotNull final Player player) {
         Objects.requireNonNull(player, "player is null");
 
-        if (HeroVender.getInstance().isAutoSellInvFull() && !isInventoryFull(player.getInventory())) {
+        if (HeroVender.getInstance().getAutoSellManager().isAutoSellInvFull() && !isInventoryFull(player.getInventory())) {
             return;
         }
 
@@ -51,7 +51,7 @@ public class AutoSellLogic {
         }
 
         try {
-            shopController.sell(user, false, true);
+            shopController.sell(user, false, true, true);
         } catch (SellDelayException ex) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(HeroVender.getInstance(), () -> autoSell(user), ex.getDelay() / 50 + 1);
         } catch (HeroException ex) {
