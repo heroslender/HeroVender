@@ -20,7 +20,7 @@ public class HerovenderCommand extends Command {
                 sender.sendMessage("§bHeroVender §7- §aPlugin reloaded!");
                 return true;
             } else if (args[0].equalsIgnoreCase("item") && sender instanceof Player) {
-                val item = ((Player) sender).getItemInHand();
+                val item = ((Player) sender).getInventory().getItemInHand();
 
                 val sb = new StringBuilder(ChatColor.GREEN.toString());
                 sb.append("Item: ");
