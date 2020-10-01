@@ -34,7 +34,7 @@ public class ShopItem {
             return false;
         }
 
-        return itemStack.getTypeId() == stack.getTypeId()
+        return itemStack.getType() == stack.getType()
                 && (ignoreDurability || itemStack.getDurability() == stack.getDurability())
                 && itemStack.hasItemMeta() == stack.hasItemMeta()
                 && (!itemStack.hasItemMeta() || Bukkit.getItemFactory().equals(itemStack.getItemMeta(), stack.getItemMeta()));

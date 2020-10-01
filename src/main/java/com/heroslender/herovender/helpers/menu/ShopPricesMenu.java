@@ -16,7 +16,7 @@ import org.bukkit.Material;
 import java.util.List;
 
 public class ShopPricesMenu extends Menu {
-    private HItem BORDER_GLASS = new HItem(Material.STAINED_GLASS_PANE, (short) 15, ChatColor.RESET.toString());
+    private static final HItem BORDER_GLASS = new HItem(Material.BLACK_STAINED_GLASS_PANE, ChatColor.RESET.toString());
 
     public ShopPricesMenu(final MessageController messageController, final User user) {
         this(messageController, user, getShopItems(user));

@@ -5,6 +5,7 @@ import lombok.val;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 public class HerovenderCommand extends Command {
 
@@ -21,7 +22,7 @@ public class HerovenderCommand extends Command {
                 return true;
             } else if (args[0].equalsIgnoreCase("item") && sender instanceof Player) {
                 val item = ((Player) sender).getInventory().getItemInHand();
-
+                MaterialData data = item.getData();
                 val sb = new StringBuilder(ChatColor.GREEN.toString());
                 sb.append("Item: ");
                 sb.append(item.getType().name());

@@ -1,6 +1,7 @@
 name: HeroVender
 version: ${project.version}
 main: com.heroslender.herovender.HeroVender
+api-version: 1.13
 authors: [Heroslender]
 depend: [Vault]
 softdepend: [HeroStackDrops, AutoPickup]

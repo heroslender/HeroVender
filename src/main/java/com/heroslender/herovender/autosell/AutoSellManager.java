@@ -19,7 +19,7 @@ public class AutoSellManager {
     public void init() {
         // Load auto-sell related config
         if (!getConfig().isSet("autosell.strategy")) {
-            getConfig().set("autosell.strategy", "FULL_INVENTORY");
+            getConfig().set("autosell.strategy", "PICKUP_ITEM");
             saveConfig();
         }
         if (!getConfig().isSet("autosell.settings.require-inventory-full")) {

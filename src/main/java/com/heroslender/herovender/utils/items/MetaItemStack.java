@@ -63,24 +63,34 @@ public class MetaItemStack {
     }
 
     public static MetaItemStack getFromString(String itemString) {
-        if (itemString == null || itemString.isEmpty()) {
-            return null;
+        try {
+            if (itemString == null || itemString.isEmpty()) {
+                return null;
+            }
+
+            final String[] parts = itemString.split(" +");
+            final ItemStack parseStack = getItemStack(parts[0], parts.length > 1 ? Integer.parseInt(parts[1]) : 1);
+            if (parseStack == null || parseStack.getType() == Material.AIR) {
+                return null;
+            }
+
+            final MetaItemStack metaStack = new MetaItemStack(parseStack);
+
+            if (parts.length > 2) {
+                // We pass a null sender here because kits should not do perm checks
+                metaStack.parseStringMeta(true, parts, 2);
+            }
+
+            return metaStack;
+        } catch (IllegalArgumentException e) {
+            HeroVender.getInstance().getLogger().log(
+                    Level.SEVERE,
+                    "Error parsing material type for item " + itemString,
+                    e
+            );
         }
 
-        final String[] parts = itemString.split(" +");
-        final ItemStack parseStack = getItemStack(parts[0], parts.length > 1 ? Integer.parseInt(parts[1]) : 1);
-        if (parseStack == null || parseStack.getType() == Material.AIR) {
-            return null;
-        }
-
-        final MetaItemStack metaStack = new MetaItemStack(parseStack);
-
-        if (parts.length > 2) {
-            // We pass a null sender here because kits should not do perm checks
-            metaStack.parseStringMeta(true, parts, 2);
-        }
-
-        return metaStack;
+        return null;
     }
 
     private static ItemStack getItemStack(final String itemId, final int amount) {
@@ -97,10 +107,8 @@ public class MetaItemStack {
         }
 
         try {
-            if (NumberUtil.isInt(itemname)) {
-                return new ItemStack(Material.getMaterial(Integer.parseInt(itemname)), amount, metaData);
-            } else if (NumberUtil.isInt(itemId)) {
-                return new ItemStack(Material.getMaterial(Integer.parseInt(itemId)), amount, metaData);
+            if (NumberUtil.isInt(itemname) || NumberUtil.isInt(itemId)) {
+                throw new IllegalArgumentException("Integer material IDs no longer supported");
             } else {
                 return new ItemStack(Material.getMaterial(itemname), amount, metaData);
             }
@@ -202,7 +210,7 @@ public class MetaItemStack {
         } else if (split[0].equalsIgnoreCase("unbreakable")) {
             boolean value = split.length <= 1 || Boolean.parseBoolean(split[1]);
             setUnbreakable(stack, value);
-        } else if (split.length > 1 && (split[0].equalsIgnoreCase("player") || split[0].equalsIgnoreCase("owner")) && stack.getType() == Material.SKULL_ITEM) {
+        } else if (split.length > 1 && (split[0].equalsIgnoreCase("player") || split[0].equalsIgnoreCase("owner")) && stack.getType() == Material.PLAYER_HEAD) {
             stack.setDurability((short) 3);
             final String owner = split[1];
             final SkullMeta meta = (SkullMeta) stack.getItemMeta();
@@ -218,14 +226,14 @@ public class MetaItemStack {
             final BookMeta meta = (BookMeta) stack.getItemMeta();
             meta.setTitle(title);
             stack.setItemMeta(meta);
-        } else if (split.length > 1 && split[0].equalsIgnoreCase("power") && stack.getType() == Material.FIREWORK) {
+        } else if (split.length > 1 && split[0].equalsIgnoreCase("power") && stack.getType() == Material.FIREWORK_ROCKET) {
             final int power = NumberUtil.isInt(split[1]) ? Integer.parseInt(split[1]) : 0;
             final FireworkMeta meta = (FireworkMeta) stack.getItemMeta();
             meta.setPower(power > 3 ? 4 : power);
             stack.setItemMeta(meta);
         } else if (split.length > 1 && split[0].equalsIgnoreCase("itemflags")) {
             addItemFlags(string);
-        } else if (stack.getType() == Material.FIREWORK) {//WARNING - Meta for fireworks will be ignored after this point.
+        } else if (stack.getType() == Material.FIREWORK_ROCKET) {//WARNING - Meta for fireworks will be ignored after this point.
             addFireworkMeta(false, string);
         } else if (isPotion(stack.getType())) { //WARNING - Meta for potions will be ignored after this point.
             addPotionMeta(false, string);
@@ -281,7 +289,7 @@ public class MetaItemStack {
     }
 
     public void addFireworkMeta(final boolean allowShortName, final String string) {
-        if (stack.getType() == Material.FIREWORK) {
+        if (stack.getType() == Material.FIREWORK_ROCKET) {
             final String[] split = splitPattern.split(string, 2);
             if (split.length < 2) {
                 return;
@@ -384,24 +392,33 @@ public class MetaItemStack {
     }
 
     private void parseEnchantmentStrings(final boolean allowUnsafe, final String[] split) {
-        final Enchantment enchantment = Enchantments.getByName(split[0]);
-        if (enchantment == null) {
-            return;
-        }
-
-        int level = -1;
-        if (split.length > 1) {
-            try {
-                level = Integer.parseInt(split[1]);
-            } catch (NumberFormatException ex) {
-                level = -1;
+        try {
+            final Enchantment enchantment = Enchantments.getByName(split[0]);
+            if (enchantment == null) {
+                return;
             }
-        }
 
-        if (level < 0 || (!allowUnsafe && level > enchantment.getMaxLevel())) {
-            level = enchantment.getMaxLevel();
+            int level = -1;
+            if (split.length > 1) {
+                try {
+                    level = Integer.parseInt(split[1]);
+                } catch (NumberFormatException ex) {
+                    level = -1;
+                }
+            }
+
+            if (level < 0 || (!allowUnsafe && level > enchantment.getMaxLevel())) {
+                level = enchantment.getMaxLevel();
+            }
+
+            addEnchantment(allowUnsafe, enchantment, level);
+        } catch (IllegalArgumentException e) {
+            HeroVender.getInstance().getLogger().log(
+                    Level.SEVERE,
+                    "Error parsing enchantment for item " + getItemStack(),
+                    e
+            );
         }
-        addEnchantment(allowUnsafe, enchantment, level);
     }
 
     public void addEnchantment(final boolean allowUnsafe, final Enchantment enchantment, final int level) {
@@ -439,7 +456,7 @@ public class MetaItemStack {
     }
 
     public void addBannerMeta(final String string) {
-        if (stack.getType() == Material.BANNER && string != null) {
+        if (stack.getType().name().contains("BANNER") && string != null) {
             final String[] split = splitPattern.split(string, 2);
 
             if (split.length < 2) {

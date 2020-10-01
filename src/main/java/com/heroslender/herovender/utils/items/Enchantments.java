@@ -205,7 +205,7 @@ public class Enchantments {
     public static Enchantment getByName(String name) {
         Enchantment enchantment;
         if (NumberUtil.isInt(name)) {
-            enchantment = Enchantment.getById(Integer.parseInt(name));
+            throw new IllegalArgumentException("Integer enchantment IDs no longer supported");
         } else {
             enchantment = Enchantment.getByName(name.toUpperCase(Locale.ENGLISH));
         }
