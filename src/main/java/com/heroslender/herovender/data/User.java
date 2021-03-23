@@ -2,13 +2,10 @@ package com.heroslender.herovender.data;
 
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.command.exception.SellDelayException;
-import com.heroslender.herovender.helpers.MessageBuilder;
-import com.heroslender.herovender.utils.NumberUtil;
 import lombok.Data;
 import lombok.val;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
@@ -23,6 +20,10 @@ public class User {
         this.player = player;
         shiftSellActive = false;
         sellDelay = 0;
+    }
+
+    public Shop[] getShops() {
+        return HeroVender.getInstance().getShopController().getShops(this);
     }
 
     public Inventory getInventory() {

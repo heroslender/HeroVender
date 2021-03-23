@@ -1,5 +1,6 @@
 package com.heroslender.herovender.controller;
 
+import com.google.common.collect.Lists;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.command.exception.SellDelayException;
 import com.heroslender.herovender.data.*;
@@ -15,17 +16,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class ShopController {
     private final ShopService shopService;
 
-    public Shop[] getShopsFor(User user) {
-        return shopService.get().stream()
-                .filter(shop -> shop.getPermission() == null || user.getPlayer().hasPermission(shop.getPermission()))
-                .sorted(Comparator.comparingInt(Shop::getPriority))
-                .toArray(Shop[]::new);
+    public List<Shop> getShops() {
+        return shopService.get();
+    }
+
+    public Shop[] getShops(User user) {
+        final List<Shop> shops = shopService.get();
+        final ArrayList<Shop> playerShops = Lists.newArrayList();
+        for (Shop shop : shops) {
+            if (shop.getPermission() == null || user.getPlayer().hasPermission(shop.getPermission())) {
+                playerShops.add(shop);
+            }
+        }
+
+        return playerShops.toArray(new Shop[0]);
     }
 
     public Invoice sell(@NonNull final User user) throws HeroException {
@@ -88,11 +98,11 @@ public class ShopController {
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
     public Invoice sellSilent(@NonNull final User user) throws HeroException {
-        return sellSilent(user, getShopsFor(user));
+        return sellSilent(user, getShops(user));
     }
 
     /**
-     * Sell the player's inventory, to the shops defined, withou sending him a message
+     * Sell the player's inventory, to the shops defined, without sending him a message
      *
      * @param user  The player selling the inventory
      * @param shops The shops to sell to
@@ -152,7 +162,7 @@ public class ShopController {
         return invoice;
     }
 
-    private ShopItem getShopItem(ItemStack itemStack, Shop... shops) {
+    private ShopItem getShopItem(ItemStack itemStack, Shop[] shops) {
         val available = new ArrayList<ShopItem>();
         for (Shop shop : shops) {
             val item = shop.getShopItem(itemStack);

@@ -3,7 +3,6 @@ package com.heroslender.herovender.helpers.menu;
 import com.google.common.collect.Lists;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.controller.MessageController;
-import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.data.Shop;
 import com.heroslender.herovender.data.ShopItem;
 import com.heroslender.herovender.data.User;
@@ -13,9 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 public class ShopPricesMenu extends Menu {
+    private static final Comparator<ShopItem> PRICE_COMPARATOR_DESC = (o1, o2) -> Double.compare(o2.getPrice(), o1.getPrice());
     private static final HItem BORDER_GLASS = new HItem(Material.BLACK_STAINED_GLASS_PANE, ChatColor.RESET.toString());
 
     public ShopPricesMenu(final MessageController messageController, final User user) {
@@ -75,18 +77,24 @@ public class ShopPricesMenu extends Menu {
     }
 
     private static List<ShopItem> getShopItems(final User user) {
-        final ShopController shopController = HeroVender.getInstance().getShopController();
-        final Shop[] shops = shopController.getShopsFor(user);
+        final Shop[] shops = user.getShops();
         final List<ShopItem> items = Lists.newArrayList();
 
         for (Shop shop : shops) {
             for (ShopItem item : shop.getItems()) {
-                items.removeIf($ -> $.isSimilar(item.getItemStack()) && $.getPrice() < item.getPrice());
+                Iterator<ShopItem> it = items.iterator();
+                while (it.hasNext()) {
+                    final ShopItem next = it.next();
+                    if (next.isSimilar(item.getItemStack()) && next.getPrice() < item.getPrice()) {
+                        it.remove();
+                    }
+                }
+
                 items.add(item);
             }
         }
 
-        items.sort((o1, o2) -> Double.compare(o2.getPrice(), o1.getPrice()));
+        items.sort(PRICE_COMPARATOR_DESC);
 
         return items;
     }

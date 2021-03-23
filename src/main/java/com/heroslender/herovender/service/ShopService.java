@@ -8,6 +8,7 @@ import lombok.val;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -50,6 +51,17 @@ public class ShopService implements Service<Shop> {
 
         // Finish initialization after all shops have been loaded
         shops.forEach(shop -> shop.loadParents(this));
+
+        sort();
+    }
+
+    /**
+     * Sort the shop list.
+     *
+     * You must call this method it you manually add shops to the list.
+     */
+    public void sort() {
+        shops.sort(Comparator.naturalOrder());
     }
 
     @Override
