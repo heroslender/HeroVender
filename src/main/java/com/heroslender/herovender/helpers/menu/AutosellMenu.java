@@ -26,7 +26,7 @@ public class AutosellMenu extends Menu {
         val sellItem = getItemStack(
                 "sell.menu.sell",
                 messageBuilder,
-                new HItem(Material.DOUBLE_PLANT, "§aSell", "", "§7Click here to sell your inventory!")
+                new HItem(Material.SUNFLOWER, "§aSell", "", "§7Click here to sell your inventory!")
         );
 
         setItem(10, sellItem, clickEvent -> {

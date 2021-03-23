@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ShopPricesMenu extends Menu {
     private static final Comparator<ShopItem> PRICE_COMPARATOR_DESC = (o1, o2) -> Double.compare(o2.getPrice(), o1.getPrice());
-    private static final HItem BORDER_GLASS = new HItem(Material.STAINED_GLASS_PANE, (short) 15, ChatColor.RESET.toString());
+    private static final HItem BORDER_GLASS = new HItem(Material.BLACK_STAINED_GLASS_PANE, ChatColor.RESET.toString());
 
     public ShopPricesMenu(final MessageController messageController, final User user) {
         this(messageController, user, getShopItems(user));
