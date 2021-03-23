@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Data
 @AllArgsConstructor
-public class Shop {
+public class Shop implements Comparable<Shop> {
     @NonNull private final String name;
     private final String permission;
     @NonNull private final int priority;
@@ -55,5 +56,10 @@ public class Shop {
         }
 
         return null;
+    }
+
+    @Override
+    public int compareTo(@NotNull Shop o) {
+        return Integer.compare(this.getPriority(), o.getPriority());
     }
 }
