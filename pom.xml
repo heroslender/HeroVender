@@ -45,7 +45,7 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>heroslender-repo</id>
@@ -83,13 +83,15 @@
             <groupId>com.philderbeast.autopickup</groupId>
             <artifactId>autopickup</artifactId>
             <version>5.3.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/AutoPickup-5.4.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>me.MnMaxon</groupId>
             <artifactId>autopickup</artifactId>
             <version>3.9</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/Libs/AutoPickup.jar</systemPath>
+            <systemPath>${project.basedir}/libs/AutoPickup.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
