@@ -17,6 +17,19 @@ public class MessageService implements Service<String> {
     @Override
     public void init() {
         config.reload();
+
+        setDefault("sell.command.actionbar", false);
+        setDefault("sell.command.chat", true);
+        setDefault("sell.command.ignore-empty", false);
+
+        setDefault("sell.autosell.actionbar", true);
+        setDefault("sell.autosell.chat", false);
+        setDefault("sell.autosell.ignore-empty", true);
+
+        setDefault("sell.shiftsell.actionbar", true);
+        setDefault("sell.shiftsell.chat", false);
+        setDefault("sell.shiftsell.ignore-empty", false);
+
         loadOrSaveDefault("number-formatting", "K;M;B;T;Q");
         loadOrSaveDefault("sell.sold", "&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!");
         loadOrSaveDefault("sell.no-items", "&cYou don't have any items that can be sold!");
@@ -59,6 +72,17 @@ public class MessageService implements Service<String> {
 
         loadOrSaveDefault("prices.menu.title", "Sell menu!");
         loadOrSaveDefault("prices.menu.item.lore", "", "&7Price per unit: &a$&f:price-formatted:", "", ":lore:");
+    }
+
+    private void setDefault(final String key, final Object value) {
+        if (config == null) {
+            return;
+        }
+
+        if (!config.contains(key)) {
+            config.set(key, value);
+            config.save();
+        }
     }
 
     private void loadOrSaveDefault(final String messageId, final String defaultMessage) {

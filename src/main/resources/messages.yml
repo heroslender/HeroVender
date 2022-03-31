@@ -1,0 +1,42 @@
+sell:
+  command:
+    actionbar: false
+    chat: true
+    ignore-empty: false
+  autosell:
+    actionbar: true
+    chat: false
+    ignore-empty: true
+    'on': '&aYou have activated the Auto-Sell!'
+    'off': '&cYou have deactivated the Auto-Sell!'
+  shiftsell:
+    actionbar: true
+    chat: false
+    ignore-empty: false
+    'on': '&aYou have activated the Shift-Sell!'
+    'off': '&cYou have deactivated the Shift-Sell!'
+  sold: '&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!'
+  no-items: '&cYou don''t have any items that can be sold!'
+  delay: '&cYou must wait :delay-formated: to sell again!'
+  menu:
+    title: Sell menu!
+    sell: DOUBLE_PLANT 1 name:&aSell lore:&7Click_here_to_sell_your_inventory!
+    sell-prices: ANVIL 1 name:&aPrices lore:&7Click_here_to_see_your_sell_prices!
+    shiftsell:
+      no-permission: LEVER 1 name:&aShift-Sell lore:&7Sell_your_inventory_by_sneaking||&7(Insufficient_permissions)
+      'on': LEVER 1 name:&aShift-Sell lore:&7Sell_your_inventory_by_sneaking||&7Current_state->_&aActive|&7(Click_to_deactivate)
+      'off': LEVER 1 name:&cShift-Sell lore:&7Sell_your_inventory_by_sneaking||&7Current_state->_&cInactive|&7(Click_to_activate)
+    autosell:
+      no-permission: LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7(Insufficient_permissions)
+      'on': LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&aActive|&7(Click_to_deactivate)
+      'off': LEVER 1 name:&cAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&cInactive|&7(Click_to_activate)
+number-formatting: K;M;B;T;Q
+prices:
+  menu:
+    title: Sell menu!
+    item:
+      lore:
+        - ''
+        - '&7Price per unit: &a$&f:price-formatted:'
+        - ''
+        - ':lore:'

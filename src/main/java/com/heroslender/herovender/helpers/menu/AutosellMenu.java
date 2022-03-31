@@ -30,7 +30,7 @@ public class AutosellMenu extends Menu {
         );
 
         setItem(10, sellItem, clickEvent -> {
-            HeroVender.getInstance().getShopController().sell(user);
+            HeroVender.getInstance().getShopController().sell(user, true, false, false);
             clickEvent.getWhoClicked().closeInventory();
         });
 
@@ -63,7 +63,7 @@ public class AutosellMenu extends Menu {
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
-        if (!user.getPlayer().hasPermission(Config.SHIFTSELL_PERMISSION)){
+        if (!user.getPlayer().hasPermission(Config.SHIFTSELL_PERMISSION)) {
             val sellItemString = messageController.getMessage("sell.menu.shiftsell.no-permission").orElse(null);
 
             val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
@@ -108,7 +108,7 @@ public class AutosellMenu extends Menu {
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
-        if (!user.getPlayer().hasPermission(Config.AUTOSELL_PERMISSION)){
+        if (!user.getPlayer().hasPermission(Config.AUTOSELL_PERMISSION)) {
             val sellItemString = messageController.getMessage("sell.menu.autosell.no-permission").orElse(null);
 
             val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
