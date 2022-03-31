@@ -33,21 +33,21 @@ public final class HeroVender extends JavaPlugin {
 
     @Getter private final AutoSellManager autoSellManager;
 
+    @Getter private CustomFileConfiguration messagesConfig = null;
+
     @Getter private Economy economy = null;
 
     public HeroVender() {
         instance = this;
 
         saveDefaultConfig();
-
-        CustomFileConfiguration messagesConfig = null;
         try {
             messagesConfig = new CustomFileConfiguration("messages", this);
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "There was an error loading the messages.yml configuration!", e);
         }
 
-        this.autoSellManager = new AutoSellManager();
+        this.autoSellManager = new AutoSellManager(this);
 
         MessageService messageService = new MessageService(messagesConfig);
         messageController = new MessageController(messageService);
@@ -80,13 +80,13 @@ public final class HeroVender extends JavaPlugin {
 
         Menu.registar(this);
 
-        new SellCommand(shopController);
+        new SellCommand(shopController, messagesConfig);
         new SellmenuCommand();
         new HerovenderCommand();
         new AutosellCommand();
         new ShiftsellCommand();
 
-        registerEvent(new ShiftSellListener(userController, shopController));
+        registerEvent(new ShiftSellListener(userController, shopController, messagesConfig));
         registerEvent(new UserListener(userController));
 
         new Metrics(this);

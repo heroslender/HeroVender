@@ -5,11 +5,15 @@ import com.heroslender.herovender.autosell.strategy.PickupStrategy;
 import com.heroslender.herovender.autosell.strategy.Strategy;
 import com.heroslender.herovender.autosell.strategy.TimerStrategy;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.util.Locale;
 
+@RequiredArgsConstructor
 public class AutoSellManager {
+    private final Plugin plugin;
     private Strategy strategy;
 
     @Getter private AutoSellStategy autoSellStrategy;
@@ -19,7 +23,7 @@ public class AutoSellManager {
     public void init() {
         // Load auto-sell related config
         if (!getConfig().isSet("autosell.strategy")) {
-            getConfig().set("autosell.strategy", "FULL_INVENTORY");
+            getConfig().set("autosell.strategy", "PICKUP_ITEM");
             saveConfig();
         }
         if (!getConfig().isSet("autosell.settings.require-inventory-full")) {
@@ -44,6 +48,13 @@ public class AutoSellManager {
             strategy = new TimerStrategy(getAutoSellTimerDelay());
         }
 
+        plugin.getLogger().info("Autosell carregado:");
+        plugin.getLogger().info(" -> Metodo: " + getAutoSellStrategy().name());
+        plugin.getLogger().info(" -> Full Inv: " + autoSellInvFull);
+        if (getAutoSellStrategy() == AutoSellStategy.TIMER) {
+            plugin.getLogger().info(" -> Timer Delay: " + autoSellTimerDelay);
+        }
+
         strategy.enable();
     }
 
@@ -52,10 +63,10 @@ public class AutoSellManager {
     }
 
     private void saveConfig() {
-        HeroVender.getInstance().saveConfig();
+        plugin.saveConfig();
     }
 
     private FileConfiguration getConfig() {
-        return HeroVender.getInstance().getConfig();
+        return plugin.getConfig();
     }
 }

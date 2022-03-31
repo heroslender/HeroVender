@@ -38,14 +38,6 @@ public class ShopController {
         return playerShops.toArray(new Shop[0]);
     }
 
-    public Invoice sell(@NonNull final User user) throws HeroException {
-        return sell(user, true, false);
-    }
-
-    public Invoice sell(@NonNull final User user, final boolean chat, final boolean actionBar) throws HeroException {
-        return sell(user, chat, actionBar, false);
-    }
-
     /**
      * Sell the player's inventory to the shops he has access to
      *
@@ -55,11 +47,7 @@ public class ShopController {
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
     public Invoice sell(@NonNull final User user, final boolean chat, final boolean actionBar, final boolean ignoreNotSold) throws HeroException {
-//        long start = System.currentTimeMillis();
         val invoice = sellSilent(user);
-//        System.out.println("sellSilent took " + (System.currentTimeMillis() - start) + " ms.");
-
-//        start = System.currentTimeMillis();
         if (chat || actionBar) {
             String toSend;
             if (invoice == null) {
@@ -86,7 +74,6 @@ public class ShopController {
                 }
             }
         }
-//        System.out.println("sell message took " + (System.currentTimeMillis() - start) + " ms.");
 
         return invoice;
     }
