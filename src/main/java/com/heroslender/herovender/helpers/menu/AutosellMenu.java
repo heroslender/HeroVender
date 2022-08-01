@@ -3,6 +3,7 @@ package com.heroslender.herovender.helpers.menu;
 import com.heroslender.herovender.Config;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.controller.MessageController;
+import com.heroslender.herovender.data.SellReason;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.utils.items.MetaItemStack;
@@ -30,7 +31,7 @@ public class AutosellMenu extends Menu {
         );
 
         setItem(10, sellItem, clickEvent -> {
-            HeroVender.getInstance().getShopController().sell(user, true, false, false);
+            HeroVender.getInstance().getShopController().sell(user, SellReason.COMMAND);
             clickEvent.getWhoClicked().closeInventory();
         });
 

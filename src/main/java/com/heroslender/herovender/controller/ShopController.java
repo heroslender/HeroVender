@@ -14,9 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class ShopController {
@@ -41,17 +43,19 @@ public class ShopController {
     /**
      * Sell the player's inventory to the shops he has access to
      *
-     * @param user      The player selling the inventory
-     * @param chat      Send the message in the player chat?
-     * @param actionBar Send the message in the player action bar?
+     * @param user   The player selling the inventory
+     * @param reason The reason for the sell
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sell(@NonNull final User user, final boolean chat, final boolean actionBar, final boolean ignoreNotSold) throws HeroException {
-        val invoice = sellSilent(user);
-        if (chat || actionBar) {
+    public Invoice sell(@NonNull User user, @NotNull SellReason reason) throws HeroException {
+        Objects.requireNonNull(user, "user cannot be null");
+        Objects.requireNonNull(reason, "reason cannot be null");
+
+        val invoice = sellSilent(user, reason);
+        if (reason.isChat() || reason.isActionbar() || !reason.isIgnoreEmpty()) {
             String toSend;
             if (invoice == null) {
-                toSend = ignoreNotSold
+                toSend = reason.isIgnoreEmpty()
                         ? null
                         : HeroVender.getInstance().getMessageController().getMessage("sell.no-items").orElse(null);
             } else {
@@ -66,10 +70,10 @@ public class ShopController {
             }
 
             if (toSend != null) {
-                if (chat) {
+                if (reason.isChat()) {
                     user.sendMessage(toSend);
                 }
-                if (actionBar) {
+                if (reason.isActionbar()) {
                     NmsUtils.sendActionBar(toSend, user.getPlayer());
                 }
             }
@@ -79,23 +83,25 @@ public class ShopController {
     }
 
     /**
-     * Sell the player's inventory to the shops he has access to, withou sending him a message
+     * Sell the player's inventory to the shops he has access to, without sending him a message
      *
-     * @param user The player selling the inventory
+     * @param user   The player selling the inventory
+     * @param reason The reason for the sell
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sellSilent(@NonNull final User user) throws HeroException {
-        return sellSilent(user, getShops(user));
+    public Invoice sellSilent(@NonNull final User user, @NotNull final SellReason reason) throws HeroException {
+        return sellSilent(user, reason, getShops(user));
     }
 
     /**
      * Sell the player's inventory, to the shops defined, without sending him a message
      *
-     * @param user  The player selling the inventory
-     * @param shops The shops to sell to
+     * @param user   The player selling the inventory
+     * @param reason The reason for the sell
+     * @param shops  The shops to sell to
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
-    public Invoice sellSilent(@NonNull final User user, @NonNull final Shop... shops) throws SellDelayException {
+    public Invoice sellSilent(@NonNull final User user, @NotNull final SellReason reason, @NonNull final Shop... shops) throws SellDelayException {
         user.checkDelay();
 
         val inventory = user.getInventory();
@@ -132,11 +138,11 @@ public class ShopController {
             toSell.add(new SellItem(itemStack, cached.getPrice(), amount));
         }
 
-        if (toSell.isEmpty()) {
+        val preInvoice = new Invoice(toSell, reason);
+        if (!toSell.isEmpty()) {
+            Bukkit.getPluginManager().callEvent(new PlayerSellEvent(user.getPlayer(), preInvoice));
             return null;
         }
-
-        val preInvoice = new Invoice(toSell);
 
         user.getSellBonus().ifPresent(bonus -> preInvoice.getBonuses().add(bonus));
 

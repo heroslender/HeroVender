@@ -80,13 +80,13 @@ public final class HeroVender extends JavaPlugin {
 
         Menu.registar(this);
 
-        new SellCommand(shopController, messagesConfig);
+        new SellCommand(shopController);
         new SellmenuCommand();
         new HerovenderCommand();
         new AutosellCommand();
         new ShiftsellCommand();
 
-        registerEvent(new ShiftSellListener(userController, shopController, messagesConfig));
+        registerEvent(new ShiftSellListener(userController, shopController));
         registerEvent(new UserListener(userController));
 
         new Metrics(this);

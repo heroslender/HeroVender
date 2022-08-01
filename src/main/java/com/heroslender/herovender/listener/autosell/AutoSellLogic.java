@@ -4,6 +4,7 @@ import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.command.exception.SellDelayException;
 import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.controller.UserController;
+import com.heroslender.herovender.data.SellReason;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.utils.HeroException;
 import org.bukkit.Bukkit;
@@ -18,18 +19,6 @@ import java.util.Objects;
 public class AutoSellLogic {
     protected final UserController userController = HeroVender.getInstance().getUserController();
     protected final ShopController shopController = HeroVender.getInstance().getShopController();
-
-    private final boolean chat;
-    private final boolean actionbar;
-    private final boolean ignoreEmpty;
-
-    public AutoSellLogic() {
-        Configuration messagesConfig = HeroVender.getInstance().getMessagesConfig();
-
-        this.chat = messagesConfig.getBoolean("sell.command.chat", true);
-        this.actionbar = messagesConfig.getBoolean("sell.command.actionbar", true);
-        this.ignoreEmpty = messagesConfig.getBoolean("sell.command.ignore-empty", true);
-    }
 
     protected void autoSell(@NotNull final Player player) {
         Objects.requireNonNull(player, "player is null");
@@ -64,7 +53,7 @@ public class AutoSellLogic {
         }
 
         try {
-            shopController.sell(user, chat, actionbar, ignoreEmpty);
+            shopController.sell(user, SellReason.AUTO);
         } catch (SellDelayException ex) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(HeroVender.getInstance(), () -> autoSell(user), ex.getDelay() / 50 + 1);
         } catch (HeroException ex) {

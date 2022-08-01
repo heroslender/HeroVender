@@ -14,7 +14,7 @@ public class NmsUtils {
             Class<?> baseComponent = getNMSClass("IChatBaseComponent");
             actionPacketConst = getNMSClass("PacketPlayOutChat").getConstructor(baseComponent, Byte.TYPE);
             chatMsgConst = getNMSClass("ChatMessage").getDeclaredConstructor(String.class, Object[].class);
-        } catch (NoSuchMethodException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

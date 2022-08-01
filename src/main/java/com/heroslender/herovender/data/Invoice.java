@@ -12,13 +12,17 @@ public class Invoice {
     private final List<SellItem> items;
     private final List<SellBonus> bonuses;
 
-    public Invoice(List<SellItem> items) {
+    private final SellReason reason;
+
+    public Invoice(List<SellItem> items, SellReason reason) {
         this.items = items;
-        bonuses = new ArrayList<>();
+        this.bonuses = new ArrayList<>();
+        this.reason = reason;
     }
 
     /**
      * Get the amout of items in the invoice
+     *
      * @return Amount of items
      */
     public int getItemCount() {

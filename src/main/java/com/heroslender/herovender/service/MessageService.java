@@ -1,5 +1,6 @@
 package com.heroslender.herovender.service;
 
+import com.heroslender.herovender.data.SellReason;
 import com.heroslender.herovender.helpers.CustomFileConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -72,6 +73,33 @@ public class MessageService implements Service<String> {
 
         loadOrSaveDefault("prices.menu.title", "Sell menu!");
         loadOrSaveDefault("prices.menu.item.lore", "", "&7Price per unit: &a$&f:price-formatted:", "", ":lore:");
+
+
+        SellReason.COMMAND.setChat(getOrSaveDefault("sell.command.chat", true));
+        SellReason.COMMAND.setActionbar(getOrSaveDefault("sell.command.actionbar", true));
+        SellReason.COMMAND.setIgnoreEmpty(getOrSaveDefault("sell.command.ignore-empty", true));
+        SellReason.AUTO.setChat(getOrSaveDefault("sell.autosell.chat", true));
+        SellReason.AUTO.setActionbar(getOrSaveDefault("sell.autosell.actionbar", true));
+        SellReason.AUTO.setIgnoreEmpty(getOrSaveDefault("sell.autosell.ignore-empty", true));
+        SellReason.SHIFT.setChat(getOrSaveDefault("sell.shiftsell.chat", true));
+        SellReason.SHIFT.setActionbar(getOrSaveDefault("sell.shiftsell.actionbar", true));
+        SellReason.SHIFT.setIgnoreEmpty(getOrSaveDefault("sell.shiftsell.ignore-empty", true));
+        SellReason.CUSTOM.setChat(getOrSaveDefault("sell.custom.chat", true));
+        SellReason.CUSTOM.setActionbar(getOrSaveDefault("sell.custom.actionbar", true));
+        SellReason.CUSTOM.setIgnoreEmpty(getOrSaveDefault("sell.custom.ignore-empty", true));
+    }
+
+    private boolean getOrSaveDefault(String path, boolean defaultValue) {
+        if (config == null) {
+            return defaultValue;
+        }
+
+        if (!config.contains(path)) {
+            config.set(path, defaultValue);
+            config.save();
+        }
+
+        return config.getBoolean(path);
     }
 
     private void setDefault(final String key, final Object value) {
