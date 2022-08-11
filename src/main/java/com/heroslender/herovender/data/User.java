@@ -7,7 +7,7 @@ import lombok.val;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.Optional;
+import java.util.List;
 
 @Data
 public class User {
@@ -30,8 +30,8 @@ public class User {
         return getPlayer().getInventory();
     }
 
-    public Optional<SellBonus> getSellBonus() {
-        return HeroVender.getInstance().getSellBonusController().getBonusForPlayer(getPlayer());
+    public List<SellBonus> getSellBonuses() {
+        return HeroVender.getInstance().getSellBonusController().getBonusesForPlayer(getPlayer());
     }
 
     public void sendMessage(String message) {

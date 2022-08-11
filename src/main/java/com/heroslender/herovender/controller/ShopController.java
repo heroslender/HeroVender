@@ -138,13 +138,11 @@ public class ShopController {
             toSell.add(new SellItem(itemStack, cached.getPrice(), amount));
         }
 
-        val preInvoice = new Invoice(toSell, reason);
-        if (!toSell.isEmpty()) {
+        val preInvoice = new Invoice(toSell, user.getSellBonuses(), reason);
+        if (toSell.isEmpty()) {
             Bukkit.getPluginManager().callEvent(new PlayerSellEvent(user.getPlayer(), preInvoice));
             return null;
         }
-
-        user.getSellBonus().ifPresent(bonus -> preInvoice.getBonuses().add(bonus));
 
         val event = new PlayerSellEvent(user.getPlayer(), preInvoice);
         Bukkit.getPluginManager().callEvent(event);
