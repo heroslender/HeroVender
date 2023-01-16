@@ -7,7 +7,7 @@ import com.heroslender.herovender.controller.SellBonusController;
 import com.heroslender.herovender.controller.ShopController;
 import com.heroslender.herovender.controller.UserController;
 import com.heroslender.herovender.helpers.CustomFileConfiguration;
-import com.heroslender.herovender.helpers.menu.Menu;
+import com.heroslender.herovender.menu.Menu;
 import com.heroslender.herovender.listener.ShiftSellListener;
 import com.heroslender.herovender.listener.UserListener;
 import com.heroslender.herovender.service.*;

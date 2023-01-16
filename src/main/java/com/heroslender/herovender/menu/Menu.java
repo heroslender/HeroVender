@@ -1,4 +1,4 @@
-package com.heroslender.herovender.helpers.menu;
+package com.heroslender.herovender.menu;
 
 import com.heroslender.herovender.utils.HeroException;
 import lombok.Getter;

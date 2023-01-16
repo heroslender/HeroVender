@@ -1,4 +1,4 @@
-package com.heroslender.herovender.helpers.menu;
+package com.heroslender.herovender.menu.impl;
 
 import com.heroslender.herovender.Config;
 import com.heroslender.herovender.HeroVender;
@@ -6,6 +6,8 @@ import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.data.SellReason;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.helpers.MessageBuilder;
+import com.heroslender.herovender.menu.HItem;
+import com.heroslender.herovender.menu.Menu;
 import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
 import org.bukkit.Bukkit;

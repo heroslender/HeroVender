@@ -1,4 +1,4 @@
-package com.heroslender.herovender.helpers.menu;
+package com.heroslender.herovender.menu;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
