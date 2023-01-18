@@ -27,7 +27,7 @@ public class ShopPricesMenu extends Menu {
     private final MessageController messageController;
 
     public ShopPricesMenu(final MessageController messageController, final User user) {
-        this(messageController, user, getShopItems(user), 1);
+        this(messageController, user, getShopItems(user), 0);
     }
 
     public ShopPricesMenu(final MessageController messageController, final User user, List<ShopItem> shopItems, int page) {
