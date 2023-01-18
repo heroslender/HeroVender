@@ -72,6 +72,8 @@ public class MessageService implements Service<String> {
                 "&7(Click_to_activate)");
 
         loadOrSaveDefault("prices.menu.title", "Sell menu!");
+        loadOrSaveDefault("prices.menu.prev-page", "ARROW 1 name:&aPrev_Page lore:&7||&bClick_to_move");
+        loadOrSaveDefault("prices.menu.next-page", "ARROW 1 name:&aNext_page lore:&7||&bClick_to_move");
         loadOrSaveDefault("prices.menu.item.lore", "", "&7Price per unit: &a$&f:price-formatted:", "", ":lore:");
 
 

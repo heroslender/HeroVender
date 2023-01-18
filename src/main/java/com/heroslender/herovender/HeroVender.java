@@ -37,8 +37,12 @@ public final class HeroVender extends JavaPlugin {
 
     @Getter private Economy economy = null;
 
+    @Getter NmsManager nmsManager;
+
     public HeroVender() {
         instance = this;
+
+        this.nmsManager = new NmsManager();
 
         saveDefaultConfig();
         try {

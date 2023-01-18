@@ -12,8 +12,19 @@ public class NmsUtils {
     static {
         try {
             Class<?> baseComponent = getNMSClass("IChatBaseComponent");
-            actionPacketConst = getNMSClass("PacketPlayOutChat").getConstructor(baseComponent, Byte.TYPE);
-            chatMsgConst = getNMSClass("ChatMessage").getDeclaredConstructor(String.class, Object[].class);
+            Class<?> packetPlayOutChat = getNMSClass("PacketPlayOutChat");
+            if (packetPlayOutChat != null) {
+                actionPacketConst = packetPlayOutChat.getConstructor(baseComponent, Byte.TYPE);
+            } else {
+                actionPacketConst = null;
+            }
+
+            Class<?> chatMessage = getNMSClass("ChatMessage");
+            if (chatMessage != null) {
+                chatMsgConst = chatMessage.getDeclaredConstructor(String.class, Object[].class);
+            } else {
+                chatMsgConst = null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

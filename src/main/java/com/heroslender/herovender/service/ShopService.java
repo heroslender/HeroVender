@@ -1,9 +1,9 @@
 package com.heroslender.herovender.service;
 
+import com.heroslender.herostackdrops.nms.ItemStackDeserializer;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.data.Shop;
 import com.heroslender.herovender.data.ShopItem;
-import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -18,6 +18,11 @@ public class ShopService implements Service<Shop> {
 
     @Override
     public void init() {
+        ItemStackDeserializer itemStackDeserializer = HeroVender.getInstance().getNmsManager().getDeserializer();
+        if (itemStackDeserializer == null) {
+            throw new IllegalStateException("No ItemStackDeserializer available for your server version.");
+        }
+
         final ConfigurationSection config = HeroVender.getInstance().getConfig().getConfigurationSection("shops");
         for (val shopId : config.getKeys(false)) {
             HeroVender.getInstance().getLogger().log(Level.INFO, "Loading the shop \"{0}\"...", shopId);
@@ -29,7 +34,7 @@ public class ShopService implements Service<Shop> {
 
             val items = new ArrayList<ShopItem>();
             for (val shopItemString : configShopItems) {
-                val metaItem = MetaItemStack.getFromString(shopItemString);
+                val metaItem = itemStackDeserializer.deserializeShopItem(shopItemString);
                 if (metaItem == null) {
                     HeroVender.getInstance().getLogger().log(Level.WARNING, "Failed to load the item \"{0}\" from the config.", shopItemString);
                     continue;
@@ -57,7 +62,7 @@ public class ShopService implements Service<Shop> {
 
     /**
      * Sort the shop list.
-     *
+     * <p>
      * You must call this method it you manually add shops to the list.
      */
     public void sort() {

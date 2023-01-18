@@ -1,6 +1,7 @@
 package com.heroslender.herovender.menu.impl;
 
 import com.google.common.collect.Lists;
+import com.heroslender.herostackdrops.nms.ItemStackDeserializer;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.data.Shop;
@@ -10,7 +11,6 @@ import com.heroslender.herovender.helpers.MessageBuilder;
 import com.heroslender.herovender.menu.HItem;
 import com.heroslender.herovender.menu.Menu;
 import com.heroslender.herovender.utils.NumberUtil;
-import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ShopPricesMenu extends Menu {
-    private static final Comparator<ShopItem> PRICE_COMPARATOR_DESC = (o1, o2) -> Double.compare(o2.getPrice(), o1.getPrice());
-    private static final HItem BORDER_GLASS = new HItem(Material.STAINED_GLASS_PANE, (short) 15, ChatColor.RESET.toString());
+    private static final Comparator<ShopItem> PRICE_COMPARATOR_DESC = (p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice());
+    private static final HItem BORDER_GLASS = getBorderItem();
     private final MessageController messageController;
 
     public ShopPricesMenu(final MessageController messageController, final User user) {
@@ -35,6 +35,7 @@ public class ShopPricesMenu extends Menu {
 
         this.messageController = messageController;
 
+        user.getPlayer().closeInventory();
         Bukkit.getScheduler().runTaskLater(HeroVender.getInstance(), () -> open(user.getPlayer()), 1);
 
         for (int i = 0; i < getSize(); i++) {
@@ -54,7 +55,9 @@ public class ShopPricesMenu extends Menu {
                     new HItem(Material.ANVIL, "§aPrices", "", "§7Click here to see your sell prices!")
             );
 
-            setItem(45, prevItem);
+            setItem(45, prevItem, e -> {
+                new ShopPricesMenu(messageController, user, shopItems, page - 1);
+            });
         }
         if ((page + 1) * 28 < shopItems.size()) {
             val nextItem = getItemStack(
@@ -63,47 +66,47 @@ public class ShopPricesMenu extends Menu {
                     new HItem(Material.ANVIL, "§aPrices", "", "§7Click here to see your sell prices!")
             );
 
-            setItem(53, nextItem);
+            setItem(53, nextItem, e -> {
+                new ShopPricesMenu(messageController, user, shopItems, page + 1);
+            });
         }
 
         int index = page * 28;
-        if (index > shopItems.size()) {
-            return;
-        }
-
-        val items = shopItems.listIterator(index);
-        val menuItems = getItems();
-        for (int i = 0; i < menuItems.length && items.hasNext(); i++) {
-            val item = menuItems[i];
-            if (item != null) {
-                continue;
-            }
-
-            val shopItem = items.next();
-            val itemStack = shopItem.getItemStack();
-            messageController.getMessages("prices.menu.item.lore").ifPresent(loreMsg -> {
-                val meta = itemStack.getItemMeta();
-                List<String> newLore = Lists.newArrayList();
-
-                for (String s : loreMsg) {
-                    if (s.equalsIgnoreCase(":lore:")) {
-                        if (meta.hasLore()) {
-                            newLore.addAll(meta.getLore());
-                        }
-                        continue;
-                    }
-
-                    newLore.add(
-                            s.replace(":price:", Double.toString(shopItem.getPrice()))
-                                    .replace(":price-formatted:", NumberUtil.formatShort(shopItem.getPrice()))
-                    );
+        if (index <= shopItems.size()) {
+            val items = shopItems.listIterator(index);
+            val menuItems = getItems();
+            for (int i = 0; i < menuItems.length && items.hasNext(); i++) {
+                val item = menuItems[i];
+                if (item != null) {
+                    continue;
                 }
 
-                meta.setLore(newLore);
-                itemStack.setItemMeta(meta);
-            });
+                val shopItem = items.next();
+                val itemStack = shopItem.getItemStack();
+                messageController.getMessages("prices.menu.item.lore").ifPresent(loreMsg -> {
+                    val meta = itemStack.getItemMeta();
+                    List<String> newLore = Lists.newArrayList();
 
-            setItem(i, itemStack);
+                    for (String s : loreMsg) {
+                        if (s.equalsIgnoreCase(":lore:")) {
+                            if (meta.hasLore()) {
+                                newLore.addAll(meta.getLore());
+                            }
+                            continue;
+                        }
+
+                        newLore.add(
+                                s.replace(":price:", Double.toString(shopItem.getPrice()))
+                                        .replace(":price-formatted:", NumberUtil.formatShort(shopItem.getPrice()))
+                        );
+                    }
+
+                    meta.setLore(newLore);
+                    itemStack.setItemMeta(meta);
+                });
+
+                setItem(i, itemStack);
+            }
         }
     }
 
@@ -139,10 +142,23 @@ public class ShopPricesMenu extends Menu {
         return items;
     }
 
-    private ItemStack getItemStack(String messageId, MessageBuilder builder, ItemStack defaultItem) {
-        val sellItemString = messageController.getMessage(messageId).orElse(null);
-        val metaItemStack = MetaItemStack.getFromString(builder.build(sellItemString));
+    private static HItem getBorderItem() {
+        try {
+            return new HItem(Material.valueOf("STAINED_GLASS_PANE"), (short) 15, ChatColor.RESET.toString());
+        } catch (IllegalArgumentException e) {
+            return new HItem(Material.valueOf("BLACK_STAINED_GLASS_PANE"), ChatColor.RESET.toString());
+        }
+    }
 
-        return metaItemStack == null ? defaultItem : metaItemStack.getItemStack();
+    private ItemStack getItemStack(String messageId, MessageBuilder builder, ItemStack defaultItem) {
+        ItemStackDeserializer itemStackDeserializer = HeroVender.getInstance().getNmsManager().getDeserializer();
+        if (itemStackDeserializer == null) {
+            return defaultItem;
+        }
+
+        val sellItemString = messageController.getMessage(messageId).orElse(null);
+        val metaItemStack = itemStackDeserializer.deserialize(builder.build(sellItemString));
+
+        return metaItemStack == null ? defaultItem : metaItemStack;
     }
 }

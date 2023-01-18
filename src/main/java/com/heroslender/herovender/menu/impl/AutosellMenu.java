@@ -1,20 +1,20 @@
 package com.heroslender.herovender.menu.impl;
 
+import com.heroslender.herostackdrops.nms.ItemStackDeserializer;
 import com.heroslender.herovender.Config;
 import com.heroslender.herovender.HeroVender;
 import com.heroslender.herovender.controller.MessageController;
 import com.heroslender.herovender.data.SellReason;
 import com.heroslender.herovender.data.User;
 import com.heroslender.herovender.helpers.MessageBuilder;
-import com.heroslender.herovender.menu.HItem;
 import com.heroslender.herovender.menu.Menu;
-import com.heroslender.herovender.utils.items.MetaItemStack;
 import lombok.val;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class AutosellMenu extends Menu {
+    private final ItemStackDeserializer itemStackDeserializer;
     private final MessageController messageController;
     private final User user;
 
@@ -22,32 +22,27 @@ public class AutosellMenu extends Menu {
         super(messageController.getMessage("sell.menu.title").orElse("Sell Menu"), 27);
         this.messageController = messageController;
         this.user = user;
+        this.itemStackDeserializer = HeroVender.getInstance().getNmsManager().getDeserializer();
 
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
-        val sellItem = getItemStack(
-                "sell.menu.sell",
-                messageBuilder,
-                new HItem(Material.DOUBLE_PLANT, "§aSell", "", "§7Click here to sell your inventory!")
-        );
+        val sellItem = getItemStack("sell.menu.sell", messageBuilder);
+        if (sellItem != null) {
+            setItem(10, sellItem, clickEvent -> {
+                HeroVender.getInstance().getShopController().sell(user, SellReason.COMMAND);
+                clickEvent.getWhoClicked().closeInventory();
+            });
+        }
 
-        setItem(10, sellItem, clickEvent -> {
-            HeroVender.getInstance().getShopController().sell(user, SellReason.COMMAND);
-            clickEvent.getWhoClicked().closeInventory();
-        });
-
-
-        val pricesItem = getItemStack(
-                "sell.menu.sell-prices",
-                messageBuilder,
-                new HItem(Material.ANVIL, "§aPrices", "", "§7Click here to see your sell prices!")
-        );
-        setItem(12, pricesItem, clickEvent -> {
-            Bukkit.getScheduler().runTaskAsynchronously(HeroVender.getInstance(), () ->
-                    new ShopPricesMenu(messageController, user)
-            );
-        });
+        val pricesItem = getItemStack("sell.menu.sell-prices", messageBuilder);
+        if (pricesItem != null) {
+            setItem(12, pricesItem, clickEvent -> {
+                Bukkit.getScheduler().runTaskAsynchronously(HeroVender.getInstance(), () ->
+                        new ShopPricesMenu(messageController, user)
+                );
+            });
+        }
 
         setItem(14, getShiftSellMenuItem());
         setItem(16, getAutoSellMenuItem());
@@ -55,50 +50,39 @@ public class AutosellMenu extends Menu {
         open(user.getPlayer());
     }
 
-    private ItemStack getItemStack(String messageId, MessageBuilder builder, ItemStack defaultItem) {
-        val sellItemString = messageController.getMessage(messageId).orElse(null);
-        val metaItemStack = MetaItemStack.getFromString(builder.build(sellItemString));
+    @Nullable
+    private ItemStack getItemStack(String messageId, MessageBuilder builder) {
+        if (itemStackDeserializer == null) {
+            return null;
+        }
 
-        return metaItemStack == null ? defaultItem : metaItemStack.getItemStack();
+        val sellItemString = messageController.getMessage(messageId).orElse(null);
+        return itemStackDeserializer.deserialize(builder.build(sellItemString));
     }
 
+    @Nullable
     private MenuItem getShiftSellMenuItem() {
         val messageBuilder = new MessageBuilder()
                 .withPlaceholder(user);
 
         if (!user.getPlayer().hasPermission(Config.SHIFTSELL_PERMISSION)) {
-            val sellItemString = messageController.getMessage("sell.menu.shiftsell.no-permission").orElse(null);
-
-            val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-            if (metaItemStack == null) {
-                return new MenuItem(new HItem(Material.LEVER, "§aShift-Sell",
-                        "§7Sell your inventory by sneaking.", "", "§7(Insufficient permissions)"));
-            } else {
-                return new MenuItem(metaItemStack.getItemStack());
+            ItemStack itemStack = getItemStack("sell.menu.shiftsell.no-permission", messageBuilder);
+            if (itemStack == null) {
+                return null;
             }
+
+            return new MenuItem(itemStack);
         }
 
         ItemStack itemStack;
         if (user.isShiftSellActive()) {
-            val sellItemString = messageController.getMessage("sell.menu.shiftsell.on").orElse(null);
-
-            val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-            if (metaItemStack == null) {
-                itemStack = new HItem(Material.LEVER, "§aShift-Sell",
-                        "§7Sell your inventory by sneaking.", "", "§7Current state: §aActive", "§7(Click to deactivate)");
-            } else {
-                itemStack = metaItemStack.getItemStack();
-            }
+            itemStack = getItemStack("sell.menu.shiftsell.on", messageBuilder);
         } else {
-            val sellItemString = messageController.getMessage("sell.menu.shiftsell.off").orElse(null);
+            itemStack = getItemStack("sell.menu.shiftsell.off", messageBuilder);
+        }
 
-            val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-            if (metaItemStack == null) {
-                itemStack = new HItem(Material.LEVER, "§cShift-Sell",
-                        "§7Sell your inventory by sneaking.", "", "§7Current state: §cInactive", "§7(Click to activate)");
-            } else {
-                itemStack = metaItemStack.getItemStack();
-            }
+        if (itemStack == null) {
+            return null;
         }
 
         return new MenuItem(itemStack, itemClick -> {
@@ -112,38 +96,23 @@ public class AutosellMenu extends Menu {
                 .withPlaceholder(user);
 
         if (!user.getPlayer().hasPermission(Config.AUTOSELL_PERMISSION)) {
-            val sellItemString = messageController.getMessage("sell.menu.autosell.no-permission").orElse(null);
-
-            val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-            if (metaItemStack == null) {
-                return new MenuItem(new HItem(Material.LEVER, "§aAuto-Sell",
-                        "§7Automatically sell your inventory when full.", "", "§7(Insufficient permissions)"));
-            } else {
-                return new MenuItem(metaItemStack.getItemStack());
+            ItemStack itemStack = getItemStack("sell.menu.autosell.no-permission", messageBuilder);
+            if (itemStack == null) {
+                return null;
             }
+
+            return new MenuItem(itemStack);
         }
 
         ItemStack itemStack;
         if (user.isAutoSellActive()) {
-            val sellItemString = messageController.getMessage("sell.menu.autosell.on").orElse(null);
-
-            val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-            if (metaItemStack == null) {
-                itemStack = new HItem(Material.LEVER, "§aAuto-Sell",
-                        "§7Automatically sell your inventory when full.", "", "§7Current state: §aActive", "§7(Click to deactivate)");
-            } else {
-                itemStack = metaItemStack.getItemStack();
-            }
+            itemStack = getItemStack("sell.menu.autosell.on", messageBuilder);
         } else {
-            val sellItemString = messageController.getMessage("sell.menu.autosell.off").orElse(null);
+            itemStack = getItemStack("sell.menu.autosell.off", messageBuilder);
+        }
 
-            val metaItemStack = MetaItemStack.getFromString(messageBuilder.build(sellItemString));
-            if (metaItemStack == null) {
-                itemStack = new HItem(Material.LEVER, "§cAuto-Sell",
-                        "§7Automatically sell your inventory when full.", "", "§7Current state: §cInactive", "§7(Click to activate)");
-            } else {
-                itemStack = metaItemStack.getItemStack();
-            }
+        if (itemStack == null) {
+            return null;
         }
 
         return new MenuItem(itemStack, itemClick -> {
@@ -151,4 +120,5 @@ public class AutosellMenu extends Menu {
             setItemUpdate(16, itemClick.getWhoClicked(), getAutoSellMenuItem());
         });
     }
+
 }
