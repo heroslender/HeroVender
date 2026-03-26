@@ -1,0 +1,17 @@
+[versions]
+paper-api = "1.21.8-R0.1-SNAPSHOT"
+paper-run = "1.21.8"
+
+[libraries]
+# Core dependencies
+annotations = "org.jetbrains:annotations:26.1.0"
+lombok = "org.projectlombok:lombok:1.18.44"
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+
+# Plugin dependencies
+vault = "com.github.MilkBowl:VaultAPI:1.7.1"
+
+[plugins]
+shadow = "com.gradleup.shadow:9.3.2"
+run-paper = "xyz.jpenilla.run-paper:3.0.2"
+plugin-yml-paper = "de.eldoria.plugin-yml.paper:0.8.0"
