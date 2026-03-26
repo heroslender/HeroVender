@@ -9,9 +9,3 @@
  */
 
 rootProject.name = "HeroVender"
-
-include(
-    ":nms",
-    ":nms:v1_8_R3",
-    ":nms:v1_13_R1",
-)

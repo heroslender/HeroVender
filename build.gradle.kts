@@ -1,70 +1,135 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
+import org.gradle.kotlin.dsl.test
+
 plugins {
-    java
     `java-library`
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.run.paper)
+    alias(libs.plugins.plugin.yml.paper)
+
+    idea
 }
 
+group = "com.github.heroslender"
+version = "1.4.0"
+val entryPoint = "com.github.heroslender.herovender.HeroVender"
+
 repositories {
-    // Vault
-    maven("https://nexus.hc.to/content/repositories/pub_releases")
-    maven("https://nexus.heroslender.com/repository/maven-public/")
+    mavenCentral()
+
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
+    maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.codemc.org/repository/maven-public/") {
+        content {
+            includeGroup("com.github.retrooper") // PacketEvents
+        }
+    }
+    maven("https://jitpack.io/") {
+        content {
+            includeGroup("com.github.MilkBowl") // VaultAPI
+        }
+    }
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
-    compileOnly("net.milkbowl.vault:VaultAPI:1.6")
-    compileOnly("com.heroslender:StackDrops:1.11.2")
+    // Core dependencies
+    compileOnly(libs.annotations)
+    annotationProcessor(libs.annotations)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 
-    implementation(project(":nms"))
-    implementation(project(":nms:v1_8_R3"))
-    implementation(project(":nms:v1_13_R1"))
+    compileOnly(libs.paper.api)
 
-    compileOnly(fileTree("libs") {
-        include("*.jar")
-    })
+    compileOnly(libs.vault) {
+        exclude("org.bukkit:bukkit:1.13.1-R0.1-SNAPSHOT")
+    }
+
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-allprojects {
-    group = "com.heroslender"
-    version = "1.4.0"
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
-    apply {
-        plugin("org.gradle.java")
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks {
+
+    build {
+        dependsOn(shadowJar)
     }
 
-    repositories {
-        mavenCentral()
+    compileJava {
+        options.encoding = Charsets.UTF_8.name()
 
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
+        options.release.set(21)
+        options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Xdiags:verbose"))
     }
 
-    dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.24")
-        annotationProcessor("org.projectlombok:lombok:1.18.24")
-
-        compileOnly("org.jetbrains:annotations:23.1.0")
+    javadoc {
+        isFailOnError = false
+        val options = options as StandardJavadocDocletOptions
+        options.encoding = Charsets.UTF_8.name()
+        options.overview = "src/main/javadoc/overview.html"
+        options.windowTitle = "${rootProject.name} Javadoc"
+        options.tags("apiNote:a:API Note:", "implNote:a:Implementation Note:", "implSpec:a:Implementation Requirements:")
+        options.addStringOption("Xdoclint:none", "-quiet")
+        options.use()
     }
 
-    java {
-        withJavadocJar()
-        withSourcesJar()
-
-        targetCompatibility = JavaVersion.VERSION_1_8
-        sourceCompatibility = JavaVersion.VERSION_1_8
+    processResources {
+        filteringCharset = Charsets.UTF_8.name()
     }
 
-    tasks {
-        compileJava {
-            options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+    test {
+        useJUnitPlatform()
+    }
+
+    runServer {
+        minecraftVersion(libs.versions.paper.run.get())
+
+        // IntelliJ IDEA debugger setup: https://docs.papermc.io/paper/dev/debugging#using-a-remote-debugger
+        jvmArgs("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true", "-DIReallyKnowWhatIAmDoingISwear", "-Dpaper.playerconnection.keepalive=6000")
+        systemProperty("terminal.jline", false)
+        systemProperty("terminal.ansi", true)
+
+        // Automatically install dependencies
+        downloadPlugins {
+            github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
+            modrinth("EssentialsX", "2.21.2")
         }
+    }
+}
 
-        javadoc {
-            options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-        }
+paper { // Options: https://docs.eldoria.de/pluginyml/paper/
+    main = entryPoint
+    loader = entryPoint + "PluginLoader"
+    generateLibrariesJson = true
+    load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
-        processResources {
-            filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
+    // Info
+    name = project.name
+    prefix = project.name
+    version = "${project.version}"
+    description = "${project.description}"
+    authors = listOf("Heroslender")
+    apiVersion = libs.versions.paper.api.get().substringBefore("-R").substringBefore("-pre")
+    foliaSupported = false
+
+    // Dependencies
+    hasOpenClassloader = true
+    bootstrapDependencies {}
+    serverDependencies {
+        register("Vault") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
         }
     }
+    provides = listOf()
 }
