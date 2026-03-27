@@ -39,43 +39,6 @@ public class MessageService implements Service<String> {
         loadOrSaveDefault("sell.autosell.off", "&cYou have deactivated the Auto-Sell!");
         loadOrSaveDefault("sell.shiftsell.on", "&aYou have activated the Shift-Sell!");
         loadOrSaveDefault("sell.shiftsell.off", "&cYou have deactivated the Shift-Sell!");
-        loadOrSaveDefault("sell.menu.title", "Sell menu!");
-        loadOrSaveDefault("sell.menu.sell", "DOUBLE_PLANT 1 name:&aSell lore:&7Click_here_to_sell_your_inventory!");
-        loadOrSaveDefault("sell.menu.sell-prices", "ANVIL 1 name:&aPrices lore:&7Click_here_to_see_your_sell_prices!");
-        loadOrSaveDefault("sell.menu.shiftsell.no-permission", "LEVER 1 name:&aShift-Sell " +
-                "lore:&7Sell_your_inventory_by_sneaking|" +
-                "|" +
-                "&7(Insufficient_permissions)");
-        loadOrSaveDefault("sell.menu.shiftsell.on", "LEVER 1 name:&aShift-Sell " +
-                "lore:&7Sell_your_inventory_by_sneaking|" +
-                "|" +
-                "&7Current_state->_&aActive|" +
-                "&7(Click_to_deactivate)");
-        loadOrSaveDefault("sell.menu.shiftsell.off", "LEVER 1 name:&cShift-Sell " +
-                "lore:&7Sell_your_inventory_by_sneaking|" +
-                "|" +
-                "&7Current_state->_&cInactive|" +
-                "&7(Click_to_activate)");
-        loadOrSaveDefault("sell.menu.autosell.no-permission", "LEVER 1 name:&aAuto-Sell " +
-                "lore:&7Automatically_sell_your_inventory_when_full.|" +
-                "|" +
-                "&7(Insufficient_permissions)");
-        loadOrSaveDefault("sell.menu.autosell.on", "LEVER 1 name:&aAuto-Sell " +
-                "lore:&7Automatically_sell_your_inventory_when_full.|" +
-                "|" +
-                "&7Current_state->_&aActive|" +
-                "&7(Click_to_deactivate)");
-        loadOrSaveDefault("sell.menu.autosell.off", "LEVER 1 name:&cAuto-Sell " +
-                "lore:&7Automatically_sell_your_inventory_when_full.|" +
-                "|" +
-                "&7Current_state->_&cInactive|" +
-                "&7(Click_to_activate)");
-
-        loadOrSaveDefault("prices.menu.title", "Sell menu!");
-        loadOrSaveDefault("prices.menu.prev-page", "ARROW 1 name:&aPrev_Page lore:&7||&bClick_to_move");
-        loadOrSaveDefault("prices.menu.next-page", "ARROW 1 name:&aNext_page lore:&7||&bClick_to_move");
-        loadOrSaveDefault("prices.menu.item.lore", "", "&7Price per unit: &a$&f:price-formatted:", "", ":lore:");
-
 
         SellReason.COMMAND.setChat(getOrSaveDefault("sell.command.chat", true));
         SellReason.COMMAND.setActionbar(getOrSaveDefault("sell.command.actionbar", true));
