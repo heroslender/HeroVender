@@ -128,7 +128,7 @@ paper { // Options: https://docs.eldoria.de/pluginyml/paper/
     serverDependencies {
         register("Vault") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
-            required = false
+            required = true
         }
     }
     provides = listOf()
