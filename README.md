@@ -28,7 +28,6 @@ A plugin that allows your players to sell their inventory with a simple command 
 ## Commands
 
 - `/sell` - Sell the inventory
-- `/sellmenu` - Open the selling menu, that allows the player to activate shift-sell or auto-sell
 - `/shiftsell` - Toggle the Shift-Sell status
 - `/autosell` - Toggle the Auto-Sell status
 - `/herovender reload` - Reload the plugin(configuration and messages)
@@ -104,16 +103,33 @@ delay:
 shops:
   default:
     items:
-    - INK_SACK:4 1 price:1000
-    - DIAMOND 1 price:1000
-    - SLIME_BALL 1 name:&aYour_custom_named_item price:1000
+      CARROT:
+        item: minecraft:carrot
+        price: 2.0
+      test:
+        price: 1.0
+        ignore-durability: false
+        item:
+          ==: org.bukkit.inventory.ItemStack
+          DataVersion: 4440
+          id: minecraft:golden_carrot
+          count: 1
+          components:
+            minecraft:lore: '[{color:"gray",text:"A very lucky apple."},{color:"yellow",text:"Found
+              in the farm."}]'
+            minecraft:custom_name: '{color:"gold",text:"Golden Apple of Luck",italic:false}'
+          schema_version: 1
   zombie:
-    permission: vender.lapis
+    permission: shop.zombie
     inherits:
     - default
     items:
-    - ROTTEN_FLESH 1 price:1500
-    - CARROT_ITEM 1 price:5500
+      CARROT:
+        item: minecraft:carrot
+        price: 5500
+      ROTTEN_FLESH:
+        item: ROTTEN_FLESH
+        price: 1500
 ```
 
 ### Messages
@@ -123,49 +139,24 @@ sell:
   sold: '&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!'
   no-items: '&cYou don''t have any items that can be sold!'
   delay: '&cYou must wait :delay-formated: to sell again!'
-  menu:
-    title: Sell menu!
-    sell: DOUBLE_PLANT 1 name:&aSell lore:&7Click_here_to_sell_your_inventory!
-    shiftsell:
-      no-permission: LEVER 1 name:&aShift-Sell lore:&7Sell_your_inventory_by_sneaking||&7(Insufficient_permissions)
-      'on': LEVER 1 name:&aShift-Sell lore:&7Sell_your_inventory_by_sneaking||&7Current_state->_&aActive|&7(Click_to_deactivate)
-      'off': LEVER 1 name:&cShift-Sell lore:&7Sell_your_inventory_by_sneaking||&7Current_state->_&cInactive|&7(Click_to_activate)
-    autosell:
-      no-permission: LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7(Insufficient_permissions)
-      'on': LEVER 1 name:&aAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&aActive|&7(Click_to_deactivate)
-      'off': LEVER 1 name:&cAuto-Sell lore:&7Automatically_sell_your_inventory_when_full.||&7Current_state->_&cInactive|&7(Click_to_activate)
-prices:
-  menu:
-    title: "Sell Prices"
-    item:
-      lore:
-      - ''
-      - "&7Price per unit: &a$&f:price-formatted:"
-      - ''
-      - ':lore:'
+  command:
+    actionbar: false
+    chat: true
+    ignore-empty: false
+  autosell:
+    actionbar: true
+    chat: false
+    ignore-empty: true
+    'on': '&aYou have activated the Auto-Sell!'
+    'off': '&cYou have deactivated the Auto-Sell!'
+  shiftsell:
+    actionbar: true
+    chat: false
+    ignore-empty: false
+    'on': '&aYou have activated the Shift-Sell!'
+    'off': '&cYou have deactivated the Shift-Sell!'
+  custom:
+    chat: true
+    actionbar: true
+    ignore-empty: true
 ```
-
-## API
-
-To get the plugin instance you can use the `HeroVender.getInstance()` method. 
-With the plugin instance you can access all controllers and use them.
-
-### Maven
-
-```xml
-<repository>
-    <id>heroslender-repo</id>
-    <url>https://nexus.heroslender.com/repository/maven-public/</url>
-</repository>
-
-<dependency>
-    <groupId>com.heroslender</groupId>
-    <artifactId>HeroVender</artifactId>
-    <version>1.0.0</version>
-    <scope>provided</scope>
-</dependency>
-```
-
-### Events
-
-- `PlayerSellEvent` - Called when a player sells their inventory
