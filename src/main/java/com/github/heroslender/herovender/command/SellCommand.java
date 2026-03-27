@@ -20,18 +20,6 @@ public class SellCommand extends Command {
     public void onCommand(CommandSender sender, String[] args) throws HeroException {
         val user = getUser(sender).orElseThrow(CommandAllowsPlayersOnlyException::new);
 
-//        if (args.length > 0) {
-//            String param = args[0];
-//            if (param.equalsIgnoreCase("prices")
-//                    || param.equalsIgnoreCase("price")
-//                    || param.equalsIgnoreCase("precos")
-//                    || param.equalsIgnoreCase("preco")) {
-//                new ShopPricesMenu(HeroVender.getInstance().getMessageController(), user);
-//            } else if (param.equalsIgnoreCase("menu")) {
-//                new AutosellMenu(HeroVender.getInstance().getMessageController(), user);
-//            }
-//        }
-
         shopController.sell(user, SellReason.COMMAND);
     }
 }
