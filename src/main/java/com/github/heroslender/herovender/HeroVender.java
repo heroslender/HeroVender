@@ -12,7 +12,6 @@ import com.github.heroslender.herovender.controller.UserController;
 import com.github.heroslender.herovender.helpers.CustomFileConfiguration;
 import com.github.heroslender.herovender.listener.ShiftSellListener;
 import com.github.heroslender.herovender.listener.UserListener;
-import com.github.heroslender.herovender.menu.Menu;
 import com.github.heroslender.herovender.service.*;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
@@ -88,8 +87,6 @@ public final class HeroVender extends JavaPlugin {
         autoSellManager.init();
 
         services.forEach(Service::init);
-
-        Menu.registar(this);
 
         new SellCommand(shopController);
         new HerovenderCommand();
