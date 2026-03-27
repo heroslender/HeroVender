@@ -2,10 +2,14 @@ package com.github.heroslender.herovender.data;
 
 import com.github.heroslender.herovender.HeroVender;
 import com.github.heroslender.herovender.command.exception.SellDelayException;
+import io.github.miniplaceholders.api.Expansion;
 import lombok.Data;
 import lombok.val;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -38,6 +42,18 @@ public class User {
         getPlayer().sendMessage(message);
     }
 
+    public void sendMiniMessage(String message) {
+        getPlayer().sendMessage(MiniMessage.miniMessage().deserialize(message, getPlayer()));
+    }
+
+    public void sendMiniMessage(String message, Expansion expansion) {
+        sendMiniMessage(message, expansion.globalPlaceholders());
+    }
+
+    public void sendMiniMessage(String message, TagResolver tagResolver) {
+        getPlayer().sendMessage(MiniMessage.miniMessage().deserialize(message, getPlayer(), tagResolver));
+    }
+
     public void toggleShiftSell() {
         setShiftSellActive(!isShiftSellActive());
     }
@@ -46,7 +62,7 @@ public class User {
         setAutoSellActive(!isAutoSellActive());
     }
 
-    public void checkDelay() throws SellDelayException {
+    public void checkDelay(@NotNull SellReason reason) throws SellDelayException {
         val delay = HeroVender.getInstance().getUserController().getDelay(getPlayer());
         if (delay <= 0) {
             return;
@@ -54,7 +70,7 @@ public class User {
 
         val releaseTimestamp = sellDelay + delay;
         if (releaseTimestamp > System.currentTimeMillis()) {
-            throw new SellDelayException(this, releaseTimestamp - System.currentTimeMillis());
+            throw new SellDelayException(this, releaseTimestamp - System.currentTimeMillis(), reason);
         }
 
         setSellDelay(System.currentTimeMillis());

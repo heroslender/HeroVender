@@ -1,9 +1,8 @@
 package com.github.heroslender.herovender.command;
 
 import com.github.heroslender.herovender.Config;
-import com.github.heroslender.herovender.HeroVender;
+import com.github.heroslender.herovender.Message;
 import com.github.heroslender.herovender.command.exception.CommandAllowsPlayersOnlyException;
-import com.github.heroslender.herovender.helpers.MessageBuilder;
 import com.github.heroslender.herovender.utils.HeroException;
 import lombok.val;
 import org.bukkit.command.CommandSender;
@@ -25,15 +24,9 @@ public class ShiftsellCommand extends Command {
 
         user.toggleShiftSell();
 
-        val messageOpt = user.isShiftSellActive()
-                ? HeroVender.getInstance().getMessageController().getMessage("sell.shiftsell.on")
-                : HeroVender.getInstance().getMessageController().getMessage("sell.shiftsell.off");
-
-        messageOpt.ifPresent(message -> {
-            val messageBuilder = new MessageBuilder()
-                    .withPlaceholder(user);
-
-            sender.sendMessage(messageBuilder.build(message));
-        });
+        val message = user.isShiftSellActive() ? Message.SellShiftSellOn : Message.SellShiftSellOff;
+        if (message != null) {
+            user.sendMiniMessage(message);
+        }
     }
 }

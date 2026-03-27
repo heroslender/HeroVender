@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SellBonusService implements Service<PermissionSellBonus> {
+public class SellBonusService implements Service {
     private final List<PermissionSellBonus> bonuses = new ArrayList<>();
 
     @Override
@@ -27,12 +27,10 @@ public class SellBonusService implements Service<PermissionSellBonus> {
         }
     }
 
-    @Override
     public List<PermissionSellBonus> get() {
         return bonuses;
     }
 
-    @Override
     public Optional<PermissionSellBonus> getById(String id) {
         return bonuses.stream()
                 .filter(bonus -> bonus.getPermission() != null && bonus.getPermission().equalsIgnoreCase(id))

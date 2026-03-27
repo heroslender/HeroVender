@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class UserService implements Service<User> {
+public class UserService implements Service {
     private final Map<String, User> users = new HashMap<>();
     @Getter private final Map<String, Integer> delays = new HashMap<>();
 
@@ -28,12 +28,10 @@ public class UserService implements Service<User> {
         }
     }
 
-    @Override
     public List<User> get() {
         return new ArrayList<>(users.values());
     }
 
-    @Override
     public Optional<User> getById(String id) {
         return Optional.ofNullable(get(id));
     }

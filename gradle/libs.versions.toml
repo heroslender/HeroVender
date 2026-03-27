@@ -6,7 +6,9 @@ paper-run = "1.21.8"
 # Core dependencies
 annotations = "org.jetbrains:annotations:26.1.0"
 lombok = "org.projectlombok:lombok:1.18.44"
+miniplaceholders = "io.github.miniplaceholders:miniplaceholders-api:3.1.0"
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+paper-minimessage = "net.kyori:adventure-text-minimessage:4.26.1"
 
 # Plugin dependencies
 vault = "com.github.MilkBowl:VaultAPI:1.7.1"

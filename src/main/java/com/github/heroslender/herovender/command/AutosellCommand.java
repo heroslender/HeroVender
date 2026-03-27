@@ -2,6 +2,7 @@ package com.github.heroslender.herovender.command;
 
 import com.github.heroslender.herovender.Config;
 import com.github.heroslender.herovender.HeroVender;
+import com.github.heroslender.herovender.Message;
 import com.github.heroslender.herovender.command.exception.CommandAllowsPlayersOnlyException;
 import com.github.heroslender.herovender.helpers.MessageBuilder;
 import com.github.heroslender.herovender.utils.HeroException;
@@ -25,15 +26,9 @@ public class AutosellCommand extends Command {
 
         user.toggleAutoSell();
 
-        val messageOpt = user.isAutoSellActive()
-                ? HeroVender.getInstance().getMessageController().getMessage("sell.autosell.on")
-                : HeroVender.getInstance().getMessageController().getMessage("sell.autosell.off");
-
-        messageOpt.ifPresent(message -> {
-            val messageBuilder = new MessageBuilder()
-                    .withPlaceholder(user);
-
-            sender.sendMessage(messageBuilder.build(message));
-        });
+        val message = user.isAutoSellActive() ? Message.SellAutoSellOn : Message.SellAutoSellOff;
+        if (message != null) {
+            user.sendMiniMessage(message);
+        }
     }
 }

@@ -54,6 +54,7 @@ public class AutoSellLogic {
         try {
             shopController.sell(user, SellReason.AUTO);
         } catch (SellDelayException ex) {
+            // TODO - Improve this
             Bukkit.getScheduler().scheduleSyncDelayedTask(HeroVender.getInstance(), () -> autoSell(user), ex.getDelay() / 50 + 1);
         } catch (HeroException ex) {
             user.sendMessage(ex.getMessage());

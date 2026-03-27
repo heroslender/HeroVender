@@ -1,5 +1,6 @@
 package com.github.heroslender.herovender.listener;
 
+import com.github.heroslender.herovender.command.exception.SellDelayException;
 import com.github.heroslender.herovender.controller.ShopController;
 import com.github.heroslender.herovender.controller.UserController;
 import com.github.heroslender.herovender.data.SellReason;
@@ -24,6 +25,8 @@ public class ShiftSellListener implements Listener {
             if (user.isShiftSellActive()) {
                 try {
                     shopController.sell(user, SellReason.SHIFT);
+                } catch (SellDelayException ex) {
+                    ex.sendUserMessage();
                 } catch (HeroException ex) {
                     user.sendMessage(ex.getMessage());
                 }

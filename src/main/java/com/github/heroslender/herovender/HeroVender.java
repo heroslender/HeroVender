@@ -5,7 +5,6 @@ import com.github.heroslender.herovender.command.AutosellCommand;
 import com.github.heroslender.herovender.command.HerovenderCommand;
 import com.github.heroslender.herovender.command.SellCommand;
 import com.github.heroslender.herovender.command.ShiftsellCommand;
-import com.github.heroslender.herovender.controller.MessageController;
 import com.github.heroslender.herovender.controller.SellBonusController;
 import com.github.heroslender.herovender.controller.ShopController;
 import com.github.heroslender.herovender.controller.UserController;
@@ -31,8 +30,6 @@ public final class HeroVender extends JavaPlugin {
 
     @Getter
     private final ShopController shopController;
-    @Getter
-    private final MessageController messageController;
     @Getter
     private final UserController userController;
     @Getter
@@ -60,7 +57,6 @@ public final class HeroVender extends JavaPlugin {
         this.autoSellManager = new AutoSellManager(this);
 
         MessageService messageService = new MessageService(messagesConfig);
-        messageController = new MessageController(messageService);
         services.add(messageService);
 
         ShopService shopService = new ShopService();

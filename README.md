@@ -32,6 +32,7 @@ A plugin that allows your players to sell their inventory with a simple command 
 - `/autosell` - Toggle the Auto-Sell status
 - `/herovender reload` - Reload the plugin(configuration and messages)
 - `/herovender item` - See the ID of the item the player is holding
+- `/herovender additem <shop> <price>` - Adds the item in hand to a shop
 
 ## Permissions
 
@@ -135,28 +136,35 @@ shops:
 ### Messages
 
 ```yaml
+number-formatting: K;M;B;T;Q
 sell:
-  sold: '&aYou sold &7:invoice-item-count: &afor &f:invoice-total-formatted:&a!'
-  no-items: '&cYou don''t have any items that can be sold!'
-  delay: '&cYou must wait :delay-formated: to sell again!'
-  command:
-    actionbar: false
-    chat: true
-    ignore-empty: false
   autosell:
-    actionbar: true
-    chat: false
-    ignore-empty: true
-    'on': '&aYou have activated the Auto-Sell!'
-    'off': '&cYou have deactivated the Auto-Sell!'
+    'on': <green>You have activated the Auto-Sell!
+    'off': <red>You have deactivated the Auto-Sell!
+    chat:
+      sold: ''
+      no-items: ''
+    actionbar:
+      sold: <green>You sold <gray><invoice-item-count> <green>for <white><invoice-total-formatted><green>!
+      no-items: <red>You don't have any items that can be sold!
   shiftsell:
-    actionbar: true
-    chat: false
-    ignore-empty: false
-    'on': '&aYou have activated the Shift-Sell!'
-    'off': '&cYou have deactivated the Shift-Sell!'
-  custom:
-    chat: true
-    actionbar: true
-    ignore-empty: true
+    'on': <green>You have activated the Shift-Sell!
+    'off': <red>You have deactivated the Shift-Sell!
+    chat:
+      sold: <green>You sold <gray><invoice-item-count> <green>for <white><invoice-total-formatted><green>!
+      no-items: <red>You don't have any items that can be sold!
+      delay: <red>You must wait <delay-formated> to sell again!
+    actionbar:
+      sold: ''
+      no-items: ''
+      delay: ''
+  command:
+    chat:
+      sold: <green>You sold <gray><invoice-item-count> <green>for <white><invoice-total-formatted><green>!
+      no-items: <red>You don't have any items that can be sold!
+      delay: <red>You must wait <delay-formated> to sell again!
+    actionbar:
+      sold: ''
+      no-items: ''
+      delay: ''
 ```

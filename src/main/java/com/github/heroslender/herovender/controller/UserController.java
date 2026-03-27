@@ -2,16 +2,14 @@ package com.github.heroslender.herovender.controller;
 
 import com.github.heroslender.herovender.data.User;
 import com.github.heroslender.herovender.service.UserService;
+import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
 
+@AllArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    public UserService getUserService() {
-        return userService;
-    }
 
     public synchronized User getOrCreate(Player player) {
         return userService.getOrCreate(player);
@@ -30,10 +28,6 @@ public class UserController {
         }
 
         return delay;
-    }
-
-    public UserController(UserService userService) {
-        this.userService = userService;
     }
 
     public synchronized void remove(final String id) {

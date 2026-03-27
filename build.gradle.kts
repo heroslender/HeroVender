@@ -42,6 +42,8 @@ dependencies {
     annotationProcessor(libs.lombok)
 
     compileOnly(libs.paper.api)
+    implementation(libs.paper.minimessage)
+    compileOnly(libs.miniplaceholders)
 
     compileOnly(libs.vault) {
         exclude("org.bukkit:bukkit:1.13.1-R0.1-SNAPSHOT")
@@ -103,6 +105,7 @@ tasks {
         downloadPlugins {
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
             modrinth("EssentialsX", "2.21.2")
+            modrinth("MiniPlaceholders", "4zOT6txC")
         }
     }
 }

@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Locale;
+import java.util.logging.Level;
 
 @RequiredArgsConstructor
 public class AutoSellManager {
@@ -47,11 +48,11 @@ public class AutoSellManager {
             strategy = new TimerStrategy(getAutoSellTimerDelay());
         }
 
-        plugin.getLogger().info("Autosell carregado:");
-        plugin.getLogger().info(" -> Metodo: " + getAutoSellStrategy().name());
-        plugin.getLogger().info(" -> Full Inv: " + autoSellInvFull);
+        plugin.getLogger().log(Level.INFO, "Autosell loaded:");
+        plugin.getLogger().log(Level.INFO, " -> Method: {0}", getAutoSellStrategy().name());
+        plugin.getLogger().log(Level.INFO, " -> Full Inv: {0}", autoSellInvFull);
         if (getAutoSellStrategy() == AutoSellStategy.TIMER) {
-            plugin.getLogger().info(" -> Timer Delay: " + autoSellTimerDelay);
+            plugin.getLogger().log(Level.INFO, " -> Timer Delay: {0}", autoSellTimerDelay);
         }
 
         strategy.enable();

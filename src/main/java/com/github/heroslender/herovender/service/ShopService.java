@@ -4,8 +4,6 @@ import com.github.heroslender.herovender.HeroVender;
 import com.github.heroslender.herovender.data.Shop;
 import lombok.Getter;
 import lombok.val;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class ShopService implements Service<Shop> {
+public class ShopService implements Service {
     private final List<Shop> shops = new ArrayList<>();
     @Getter
     private final Logger logger = HeroVender.getInstance().getLogger();
@@ -62,12 +60,10 @@ public class ShopService implements Service<Shop> {
         shops.sort(Comparator.naturalOrder());
     }
 
-    @Override
     public List<Shop> get() {
         return shops;
     }
 
-    @Override
     public Optional<Shop> getById(String id) {
         for (Shop shop : shops) {
             if (shop.getName().equals(id)) {

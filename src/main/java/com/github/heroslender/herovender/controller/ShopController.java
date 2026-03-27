@@ -1,6 +1,7 @@
 package com.github.heroslender.herovender.controller;
 
 import com.github.heroslender.herovender.HeroVender;
+import com.github.heroslender.herovender.Message;
 import com.github.heroslender.herovender.command.exception.SellDelayException;
 import com.github.heroslender.herovender.data.*;
 import com.github.heroslender.herovender.event.PlayerSellEvent;
@@ -8,10 +9,15 @@ import com.github.heroslender.herovender.helpers.MessageBuilder;
 import com.github.heroslender.herovender.service.ShopService;
 import com.github.heroslender.herovender.utils.HeroException;
 import com.github.heroslender.herovender.utils.NmsUtils;
+import com.github.heroslender.herovender.utils.NumberUtil;
 import com.google.common.collect.Lists;
+import io.github.miniplaceholders.api.Expansion;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -53,32 +59,7 @@ public class ShopController {
         Objects.requireNonNull(reason, "reason cannot be null");
 
         val invoice = sellSilent(user, reason);
-        if (reason.isChat() || reason.isActionbar() || !reason.isIgnoreEmpty()) {
-            String toSend;
-            if (invoice == null) {
-                toSend = reason.isIgnoreEmpty()
-                        ? null
-                        : HeroVender.getInstance().getMessageController().getMessage("sell.no-items").orElse(null);
-            } else {
-                toSend = HeroVender.getInstance().getMessageController().getMessage("sell.sold").orElse(null);
-                if (toSend != null) {
-                    val messageBuilder = new MessageBuilder()
-                            .withPlaceholder(user)
-                            .withPlaceholder(invoice);
-
-                    toSend = messageBuilder.build(toSend);
-                }
-            }
-
-            if (toSend != null) {
-                if (reason.isChat()) {
-                    user.sendMessage(toSend);
-                }
-                if (reason.isActionbar()) {
-                    user.getPlayer().sendActionBar(LegacyComponentSerializer.legacyAmpersand().deserialize(toSend));
-                }
-            }
-        }
+        sendMessage(user, invoice, reason);
 
         return invoice;
     }
@@ -103,7 +84,7 @@ public class ShopController {
      * @return {@link Invoice} from the sell, or null if the {@link PlayerSellEvent} was cancelled
      */
     public Invoice sellSilent(@NonNull final User user, @NotNull final SellReason reason, @NonNull final Shop... shops) throws SellDelayException {
-        user.checkDelay();
+        user.checkDelay(reason);
 
         val inventory = user.getInventory();
         val toSell = new ArrayList<SellItem>();
@@ -140,13 +121,12 @@ public class ShopController {
         }
 
         val preInvoice = new Invoice(toSell, user.getSellBonuses(), reason);
-        if (toSell.isEmpty()) {
-            Bukkit.getPluginManager().callEvent(new PlayerSellEvent(user.getPlayer(), preInvoice));
-            return null;
-        }
-
         val event = new PlayerSellEvent(user.getPlayer(), preInvoice);
         Bukkit.getPluginManager().callEvent(event);
+
+        if (toSell.isEmpty()) {
+            return null;
+        }
 
         val invoice = event.getInvoice();
         HeroVender.getInstance().getEconomy().depositPlayer(user.getPlayer(), invoice.getTotal());
@@ -178,5 +158,62 @@ public class ShopController {
         }
 
         return highest;
+    }
+
+    public void sendMessage(User user, Invoice invoice, SellReason reason) {
+        String chatMsg;
+        String actionMsg;
+        switch (reason) {
+            case COMMAND:
+                if (invoice == null) {
+                    chatMsg = Message.SellCommandChatNoItems;
+                    actionMsg = Message.SellCommandActionbarNoItems;
+                } else {
+                    chatMsg = Message.SellCommandChatSold;
+                    actionMsg = Message.SellCommandActionbarSold;
+                }
+                break;
+            case AUTO:
+                if (invoice == null) {
+                    chatMsg = Message.SellAutoChatNoItems;
+                    actionMsg = Message.SellAutoActionbarNoItems;
+                } else {
+                    chatMsg = Message.SellAutoChatSold;
+                    actionMsg = Message.SellAutoActionbarSold;
+                }
+                break;
+            case SHIFT:
+                if (invoice == null) {
+                    chatMsg = Message.SellShiftChatNoItems;
+                    actionMsg = Message.SellShiftActionbarNoItems;
+                } else {
+                    chatMsg = Message.SellShiftChatSold;
+                    actionMsg = Message.SellShiftActionbarSold;
+                }
+                break;
+            default:
+                chatMsg = null;
+                actionMsg = null;
+                break;
+        }
+
+        if (chatMsg != null) {
+            Expansion expansion = Expansion.builder("internal")
+                    .globalPlaceholder("invoice-total", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("invoice-total-formatted", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.formatShort(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("invoice-item-count", (queue, ctx) -> Tag.selfClosingInserting(Component.text(invoice != null ? invoice.getItemCount() : 0)))
+                    .build();
+
+            user.sendMiniMessage(chatMsg, expansion);
+        }
+        if (actionMsg != null) {
+            Expansion expansion = Expansion.builder("internal")
+                    .globalPlaceholder("invoice-total", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("invoice-total-formatted", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.formatShort(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("invoice-item-count", (queue, ctx) -> Tag.selfClosingInserting(Component.text(invoice != null ? invoice.getItemCount() : 0)))
+                    .build();
+
+            user.getPlayer().sendActionBar(MiniMessage.miniMessage().deserialize(actionMsg, user.getPlayer(), expansion.globalPlaceholders()));
+        }
     }
 }

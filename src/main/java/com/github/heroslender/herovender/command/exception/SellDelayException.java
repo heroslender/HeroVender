@@ -1,12 +1,14 @@
 package com.github.heroslender.herovender.command.exception;
 
-import com.github.heroslender.herovender.HeroVender;
+import com.github.heroslender.herovender.Message;
+import com.github.heroslender.herovender.data.SellReason;
 import com.github.heroslender.herovender.data.User;
-import com.github.heroslender.herovender.helpers.MessageBuilder;
 import com.github.heroslender.herovender.utils.HeroException;
 import com.github.heroslender.herovender.utils.NumberUtil;
+import io.github.miniplaceholders.api.Expansion;
 import lombok.Getter;
-import lombok.val;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 
 public class SellDelayException extends HeroException {
     @Getter private final User user;
@@ -16,19 +18,30 @@ public class SellDelayException extends HeroException {
      */
     @Getter private final long delay;
 
-    public SellDelayException(User user, long delay) {
+    @Getter private final SellReason reason;
+
+    public SellDelayException(User user, long delay, SellReason reason) {
         this.user = user;
         this.delay = delay;
+        this.reason = reason;
     }
 
-    @Override
-    public String getMessage() {
-        val messageBuilder = new MessageBuilder()
-                .withPlaceholder("delay", getDelay())
-                .withPlaceholder("delay-formated", NumberUtil.format(getDelay() / 1000D))
-                .withPlaceholder(getUser());
-        val message = HeroVender.getInstance().getMessageController().getMessage("sell.delay").orElse("&cYou must wait :delay: to sell again!");
+    public void sendUserMessage() {
+        String msg = switch (reason) {
+            case COMMAND -> Message.SellCommandChatDelay;
+            case SHIFT -> Message.SellShiftChatDelay;
+            default -> null;
+        };
 
-        return messageBuilder.build(message);
+        if (msg == null) {
+            return;
+        }
+
+        Expansion expansion = Expansion.builder("internal")
+                .globalPlaceholder("delay", (queue, ctx) -> Tag.selfClosingInserting(Component.text(getDelay())))
+                .globalPlaceholder("delay-formated", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(getDelay()))))
+                .build();
+
+        user.sendMiniMessage(msg, expansion);
     }
 }
