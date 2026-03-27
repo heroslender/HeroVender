@@ -1,9 +1,0 @@
-name: HeroVender
-version: ${project.version}
-main: com.github.heroslender.herovender.HeroVender
-api-version: "1.21"
-authors: [Heroslender]
-depend: [Vault]
-softdepend: [HeroStackDrops, AutoPickup]
-description: Plugin de /vender com bolsa de valores
-website: www.heroslender.cf/plugins/HeroVender
