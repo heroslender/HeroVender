@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.github.heroslender"
-version = "1.4.0"
+version = "1.5.0"
 val entryPoint = "com.github.heroslender.herovender.HeroVender"
 
 repositories {
