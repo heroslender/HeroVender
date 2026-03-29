@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public class User {
     private boolean shiftSellActive;
     private boolean autoSellActive;
     private long sellDelay;
+
+    private BukkitTask autoSellTask;
+
 
     public User(Player player) {
         this.player = player;

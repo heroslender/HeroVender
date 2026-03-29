@@ -1,25 +1,31 @@
-package com.github.heroslender.herovender.autosell;
+package com.github.heroslender.herovender.service;
 
+import com.github.heroslender.herovender.HeroVender;
+import com.github.heroslender.herovender.autosell.AutoSellStategy;
 import com.github.heroslender.herovender.autosell.strategy.PickupStrategy;
 import com.github.heroslender.herovender.autosell.strategy.Strategy;
 import com.github.heroslender.herovender.autosell.strategy.TimerStrategy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Locale;
 import java.util.logging.Level;
 
 @RequiredArgsConstructor
-public class AutoSellManager {
-    private final Plugin plugin;
+public class AutoSellService implements Service {
+    private final HeroVender plugin;
     private Strategy strategy;
 
-    @Getter private AutoSellStategy autoSellStrategy;
-    @Getter private boolean autoSellInvFull;
-    @Getter private long autoSellTimerDelay = 0;
+    @Getter
+    private AutoSellStategy autoSellStrategy;
+    @Getter
+    private boolean autoSellInvFull;
+    @Getter
+    private long autoSellTimerDelay = 0;
 
+    @Override
     public void init() {
         // Load auto-sell related config
         if (!getConfig().isSet("autosell.strategy")) {
@@ -36,8 +42,10 @@ public class AutoSellManager {
         );
         this.autoSellInvFull = getConfig().getBoolean("autosell.settings.require-inventory-full", true);
 
+        val userController = plugin.getUserController();
+        val shopController = plugin.getShopController();
         if (getAutoSellStrategy() == AutoSellStategy.PICKUP_ITEM) {
-            strategy = new PickupStrategy();
+            strategy = new PickupStrategy(userController, shopController, this);
         } else if (getAutoSellStrategy() == AutoSellStategy.TIMER) {
             if (!getConfig().isSet("autosell.settings.timer-delay")) {
                 getConfig().set("autosell.settings.timer-delay", 10);
@@ -45,7 +53,7 @@ public class AutoSellManager {
             }
 
             autoSellTimerDelay = getConfig().getLong("autosell.settings.timer-delay", 10);
-            strategy = new TimerStrategy(getAutoSellTimerDelay());
+            strategy = new TimerStrategy(userController, shopController, this, getAutoSellTimerDelay());
         }
 
         plugin.getLogger().log(Level.INFO, "Autosell loaded:");
@@ -58,6 +66,7 @@ public class AutoSellManager {
         strategy.enable();
     }
 
+    @Override
     public void stop() {
         strategy.disable();
     }

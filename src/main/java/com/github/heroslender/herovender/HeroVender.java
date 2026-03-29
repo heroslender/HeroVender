@@ -1,6 +1,5 @@
 package com.github.heroslender.herovender;
 
-import com.github.heroslender.herovender.autosell.AutoSellManager;
 import com.github.heroslender.herovender.command.AutosellCommand;
 import com.github.heroslender.herovender.command.HerovenderCommand;
 import com.github.heroslender.herovender.command.SellCommand;
@@ -36,9 +35,6 @@ public final class HeroVender extends JavaPlugin {
     private final SellBonusController sellBonusController;
 
     @Getter
-    private final AutoSellManager autoSellManager;
-
-    @Getter
     private CustomFileConfiguration messagesConfig = null;
 
     @Getter
@@ -54,7 +50,8 @@ public final class HeroVender extends JavaPlugin {
             getLogger().log(Level.SEVERE, "There was an error loading the messages.yml configuration!", e);
         }
 
-        this.autoSellManager = new AutoSellManager(this);
+        AutoSellService autoSellService = new AutoSellService(this);
+        services.add(autoSellService);
 
         MessageService messageService = new MessageService(messagesConfig);
         services.add(messageService);
@@ -79,8 +76,6 @@ public final class HeroVender extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        autoSellManager.init();
 
         services.forEach(Service::init);
 
@@ -107,9 +102,7 @@ public final class HeroVender extends JavaPlugin {
     public void reload() {
         reloadConfig();
         services.forEach(Service::stop);
-        autoSellManager.stop();
         services.forEach(Service::init);
-        autoSellManager.init();
     }
 
     private boolean setupEconomy() {
