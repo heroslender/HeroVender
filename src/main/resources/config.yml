@@ -41,14 +41,26 @@ delay:
     delay: 0
 shops:
   default:
+    priority: 1
     items:
-      - INK_SACK:4 1 price:1000
-      - DIAMOND 1 price:1000
-      - SLIME_BALL 1 name:&aYour_custom_named_item price:1000
+      lapis:
+        item: LAPIS_LAZULI
+        price: 1000.0
+      diamond:
+        item: DIAMOND
+        price: 1000.0
+      slime_ball:
+        item: SLIME_BALL
+        price: 1000.0
   zombie:
     permission: vender.lapis
+    priority: 2
     inherits:
       - default
     items:
-      - ROTTEN_FLESH 1 price:1500
-      - CARROT_ITEM 1 price:5500
+      rotten_flesh:
+        item: ROTTEN_FLESH
+        price: 1500.0
+      carrot:
+        item: CARROT
+        price: 5500.0
