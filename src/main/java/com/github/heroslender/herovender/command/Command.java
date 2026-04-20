@@ -66,6 +66,11 @@ public abstract class Command implements BasicCommand {
         }
     }
 
+    @Override
+    public @NonNull List<String> suggest(@NonNull CommandSourceStack commandSourceStack, String @NonNull [] args) {
+        return Collections.emptyList();
+    }
+
     public abstract void onCommand(CommandSender sender, String[] args) throws HeroException;
 
     protected Optional<User> getUser(CommandSender sender) {
