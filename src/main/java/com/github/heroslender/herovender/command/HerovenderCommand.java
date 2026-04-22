@@ -11,6 +11,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,7 @@ public class HerovenderCommand extends Command {
     }
 
     @Override
-    public List<String> suggest(CommandSourceStack commandSourceStack, String [] args) {
+    public @NonNull List<String> suggest(@NonNull CommandSourceStack commandSourceStack, String [] args) {
         if (args.length == 0) {
             return List.of("reload", "item", "additem", "shop");
         }

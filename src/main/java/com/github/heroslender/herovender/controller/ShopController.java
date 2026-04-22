@@ -5,10 +5,8 @@ import com.github.heroslender.herovender.Message;
 import com.github.heroslender.herovender.command.exception.SellDelayException;
 import com.github.heroslender.herovender.data.*;
 import com.github.heroslender.herovender.event.PlayerSellEvent;
-import com.github.heroslender.herovender.helpers.MessageBuilder;
 import com.github.heroslender.herovender.service.ShopService;
 import com.github.heroslender.herovender.utils.HeroException;
-import com.github.heroslender.herovender.utils.NmsUtils;
 import com.github.heroslender.herovender.utils.NumberUtil;
 import com.google.common.collect.Lists;
 import io.github.miniplaceholders.api.Expansion;
@@ -18,7 +16,6 @@ import lombok.val;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -198,19 +195,19 @@ public class ShopController {
         }
 
         if (chatMsg != null) {
-            Expansion expansion = Expansion.builder("internal")
-                    .globalPlaceholder("invoice-total", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(invoice != null ? invoice.getTotal() : 0.0))))
-                    .globalPlaceholder("invoice-total-formatted", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.formatShort(invoice != null ? invoice.getTotal() : 0.0))))
-                    .globalPlaceholder("invoice-item-count", (queue, ctx) -> Tag.selfClosingInserting(Component.text(invoice != null ? invoice.getItemCount() : 0)))
+            Expansion expansion = Expansion.builder("invoice")
+                    .globalPlaceholder("total", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("total_formatted", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.formatShort(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("item_count", (queue, ctx) -> Tag.selfClosingInserting(Component.text(invoice != null ? invoice.getItemCount() : 0)))
                     .build();
 
             user.sendMiniMessage(chatMsg, expansion);
         }
         if (actionMsg != null) {
-            Expansion expansion = Expansion.builder("internal")
-                    .globalPlaceholder("invoice-total", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(invoice != null ? invoice.getTotal() : 0.0))))
-                    .globalPlaceholder("invoice-total-formatted", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.formatShort(invoice != null ? invoice.getTotal() : 0.0))))
-                    .globalPlaceholder("invoice-item-count", (queue, ctx) -> Tag.selfClosingInserting(Component.text(invoice != null ? invoice.getItemCount() : 0)))
+            Expansion expansion = Expansion.builder("invoice")
+                    .globalPlaceholder("total", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("total_formatted", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.formatShort(invoice != null ? invoice.getTotal() : 0.0))))
+                    .globalPlaceholder("item_count", (queue, ctx) -> Tag.selfClosingInserting(Component.text(invoice != null ? invoice.getItemCount() : 0)))
                     .build();
 
             user.getPlayer().sendActionBar(MiniMessage.miniMessage().deserialize(actionMsg, user.getPlayer(), expansion.globalPlaceholders()));

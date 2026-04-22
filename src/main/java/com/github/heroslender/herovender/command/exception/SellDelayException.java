@@ -37,9 +37,9 @@ public class SellDelayException extends HeroException {
             return;
         }
 
-        Expansion expansion = Expansion.builder("internal")
-                .globalPlaceholder("delay", (queue, ctx) -> Tag.selfClosingInserting(Component.text(getDelay())))
-                .globalPlaceholder("delay-formated", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(getDelay()))))
+        Expansion expansion = Expansion.builder("delay")
+                .globalPlaceholder("raw", (queue, ctx) -> Tag.selfClosingInserting(Component.text(getDelay())))
+                .globalPlaceholder("formated", (queue, ctx) -> Tag.selfClosingInserting(Component.text(NumberUtil.format(getDelay()))))
                 .build();
 
         user.sendMiniMessage(msg, expansion);

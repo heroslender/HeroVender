@@ -7,24 +7,24 @@ sell:
       sold: ''
       no-items: ''
     actionbar:
-      sold: <green>You sold <gray><invoice-item-count> <green>for <white><invoice-total-formatted><green>!
+      sold: <green>You sold <gray><invoice_item_count> <green>for <white><invoice_total_formatted><green>!
       no-items: <red>You don't have any items that can be sold!
   shiftsell:
     'on': <green>You have activated the Shift-Sell!
     'off': <red>You have deactivated the Shift-Sell!
     chat:
-      sold: <green>You sold <gray><invoice-item-count> <green>for <white><invoice-total-formatted><green>!
+      sold: <green>You sold <gray><invoice_item_count> <green>for <white><invoice_total_formatted><green>!
       no-items: <red>You don't have any items that can be sold!
-      delay: <red>You must wait <delay-formated> to sell again!
+      delay: <red>You must wait <delay_formated> to sell again!
     actionbar:
       sold: ''
       no-items: ''
       delay: ''
   command:
     chat:
-      sold: <green>You sold <gray><invoice-item-count> <green>for <white><invoice-total-formatted><green>!
+      sold: <green>You sold <gray><invoice_item_count> <green>for <white><invoice_total_formatted><green>!
       no-items: <red>You don't have any items that can be sold!
-      delay: <red>You must wait <delay-formated> to sell again!
+      delay: <red>You must wait <delay_formated> to sell again!
     actionbar:
       sold: ''
       no-items: ''
