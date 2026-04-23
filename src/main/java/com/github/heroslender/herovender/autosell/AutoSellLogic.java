@@ -41,18 +41,12 @@ public class AutoSellLogic {
     protected boolean isInventoryFull(@NotNull Inventory inventory) {
         Objects.requireNonNull(inventory, "inventory is null");
 
-        for (ItemStack stack : inventory.getContents()) {
-            if (stack == null) {
-                return false;
-            }
-        }
-
-        return true;
+        return inventory.firstEmpty() == -1;
     }
 
     private void autoSell(final User user) {
         BukkitTask autoSellTask = user.getAutoSellTask();
-        if (autoSellTask == null) {
+        if (autoSellTask != null && !autoSellTask.isCancelled()) {
             return; // AutoSell is already scheduled for this user
         }
 
