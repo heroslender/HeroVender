@@ -44,6 +44,7 @@ dependencies {
     compileOnly(libs.paper.api)
     implementation(libs.paper.minimessage)
     compileOnly(libs.miniplaceholders)
+    compileOnly(libs.placeholderapi)
 
     compileOnly(libs.vault) {
         exclude("org.bukkit:bukkit:1.13.1-R0.1-SNAPSHOT")
@@ -132,6 +133,10 @@ paper { // Options: https://docs.eldoria.de/pluginyml/paper/
         register("Vault") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = true
+        }
+        register("PlaceholderAPI") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
         }
     }
     provides = listOf()

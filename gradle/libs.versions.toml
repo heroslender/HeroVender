@@ -12,6 +12,7 @@ paper-minimessage = "net.kyori:adventure-text-minimessage:4.26.1"
 
 # Plugin dependencies
 vault = "com.github.MilkBowl:VaultAPI:1.7.1"
+placeholderapi = "me.clip:placeholderapi:2.11.6"
 
 [plugins]
 shadow = "com.gradleup.shadow:9.3.2"

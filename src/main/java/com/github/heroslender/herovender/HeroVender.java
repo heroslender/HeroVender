@@ -8,6 +8,7 @@ import com.github.heroslender.herovender.controller.SellBonusController;
 import com.github.heroslender.herovender.controller.ShopController;
 import com.github.heroslender.herovender.controller.UserController;
 import com.github.heroslender.herovender.helpers.CustomFileConfiguration;
+import com.github.heroslender.herovender.helpers.PlaceholderAPIExpansion;
 import com.github.heroslender.herovender.listener.ShiftSellListener;
 import com.github.heroslender.herovender.listener.UserListener;
 import com.github.heroslender.herovender.service.*;
@@ -86,6 +87,10 @@ public final class HeroVender extends JavaPlugin {
 
         registerEvent(new ShiftSellListener(userController, shopController));
         registerEvent(new UserListener(userController));
+
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPIExpansion(this).register();
+        }
 
         new Metrics(this, 3757);
     }
