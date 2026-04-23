@@ -1,6 +1,7 @@
 package com.github.heroslender.herovender.command;
 
 import com.github.heroslender.herovender.Config;
+import com.github.heroslender.herovender.HeroVender;
 import com.github.heroslender.herovender.Message;
 import com.github.heroslender.herovender.command.exception.CommandAllowsPlayersOnlyException;
 import com.github.heroslender.herovender.utils.HeroException;
@@ -23,6 +24,7 @@ public class ShiftsellCommand extends Command {
         val user = getUser(sender).orElseThrow(CommandAllowsPlayersOnlyException::new);
 
         user.toggleShiftSell();
+        HeroVender.getInstance().getUserController().save(user);
 
         val message = user.isShiftSellActive() ? Message.SellShiftSellOn : Message.SellShiftSellOff;
         if (message != null) {

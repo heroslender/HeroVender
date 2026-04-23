@@ -25,6 +25,7 @@ public class AutosellCommand extends Command {
         val user = getUser(sender).orElseThrow(CommandAllowsPlayersOnlyException::new);
 
         user.toggleAutoSell();
+        HeroVender.getInstance().getUserController().save(user);
 
         val message = user.isAutoSellActive() ? Message.SellAutoSellOn : Message.SellAutoSellOff;
         if (message != null) {

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class UserController {
@@ -30,7 +31,11 @@ public class UserController {
         return delay;
     }
 
-    public synchronized void remove(final String id) {
+    public synchronized void remove(final UUID id) {
         userService.remove(id);
+    }
+
+    public void save(User user) {
+        userService.save(user);
     }
 }

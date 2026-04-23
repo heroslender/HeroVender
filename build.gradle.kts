@@ -42,7 +42,13 @@ dependencies {
     annotationProcessor(libs.lombok)
 
     compileOnly(libs.paper.api)
-    implementation(libs.paper.minimessage)
+
+    implementation(libs.hikaricp)
+    implementation(libs.h2)
+    implementation(libs.mysql.connector) {
+        exclude("com.google.protobuf", "protobuf-java")
+    }
+
     compileOnly(libs.miniplaceholders)
     compileOnly(libs.placeholderapi)
 
@@ -66,6 +72,13 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    shadowJar {
+        archiveClassifier.set("")
+        relocate("com.zaxxer.hikari", "com.github.heroslender.herovender.lib.hikari")
+        relocate("org.h2", "com.github.heroslender.herovender.lib.h2")
+        relocate("com.mysql", "com.github.heroslender.herovender.lib.mysql")
     }
 
     compileJava {

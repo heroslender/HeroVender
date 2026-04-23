@@ -14,12 +14,17 @@ public class UserListener implements Listener {
     @NonNull private final UserController userController;
 
     @EventHandler
+    private void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent e) {
+        userController.getOrCreate(e.getPlayer());
+    }
+
+    @EventHandler
     private void onPlayerQuit(PlayerQuitEvent e) {
-        userController.remove(e.getPlayer().getName());
+        userController.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerKick(PlayerKickEvent e) {
-        userController.remove(e.getPlayer().getName());
+        userController.remove(e.getPlayer().getUniqueId());
     }
 }

@@ -3,6 +3,7 @@ package com.github.heroslender.herovender.service;
 import com.github.heroslender.herovender.HeroVender;
 import com.github.heroslender.herovender.data.User;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,13 +11,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 public class UserService implements Service {
-    private final Map<String, User> users = new HashMap<>();
+    private final HeroVender plugin;
+    private final Map<UUID, User> users = new HashMap<>();
     @Getter private final Map<String, Integer> delays = new HashMap<>();
 
     @Override
     public void init() {
-        final ConfigurationSection config = HeroVender.getInstance().getConfig().getConfigurationSection("delay");
+        final ConfigurationSection config = plugin.getConfig().getConfigurationSection("delay");
         if (config != null) {
             for (String id : config.getKeys(false)) {
                 String permission = config.getString(id + ".permission");
@@ -32,28 +35,35 @@ public class UserService implements Service {
         return new ArrayList<>(users.values());
     }
 
-    public Optional<User> getById(String id) {
+    public Optional<User> getById(UUID id) {
         return Optional.ofNullable(get(id));
     }
 
     @Nullable
-    public User get(@NotNull String id) {
+    public User get(@NotNull UUID id) {
         return users.get(id);
     }
 
     @NotNull
     public User getOrCreate(@NotNull final Player player) {
-        User user = get(player.getName());
+        User user = get(player.getUniqueId());
         if (user == null) {
             user = new User(player);
-            users.put(player.getName(), user);
+            users.put(player.getUniqueId(), user);
+            
+            // Load from storage
+            plugin.getStorageService().loadUser(user);
         }
 
         return user;
     }
 
-    public void remove(final String id) {
+    public void remove(final UUID id) {
         users.remove(id);
+    }
+
+    public void save(User user) {
+        plugin.getStorageService().saveUser(user);
     }
 
     @Override

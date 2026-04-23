@@ -36,6 +36,9 @@ public final class HeroVender extends JavaPlugin {
     private final SellBonusController sellBonusController;
 
     @Getter
+    private StorageService storageService;
+
+    @Getter
     private CustomFileConfiguration messagesConfig = null;
 
     @Getter
@@ -51,9 +54,6 @@ public final class HeroVender extends JavaPlugin {
             getLogger().log(Level.SEVERE, "There was an error loading the messages.yml configuration!", e);
         }
 
-        AutoSellService autoSellService = new AutoSellService(this);
-        services.add(autoSellService);
-
         MessageService messageService = new MessageService(messagesConfig);
         services.add(messageService);
 
@@ -61,13 +61,19 @@ public final class HeroVender extends JavaPlugin {
         shopController = new ShopController(shopService);
         services.add(shopService);
 
-        UserService userService = new UserService();
+        storageService = new SqlStorageService(this);
+        services.add(storageService);
+
+        UserService userService = new UserService(this);
         userController = new UserController(userService);
         services.add(userService);
 
         SellBonusService sellBonusService = new SellBonusService();
         sellBonusController = new SellBonusController(sellBonusService);
         services.add(sellBonusService);
+
+        AutoSellService autoSellService = new AutoSellService(this);
+        services.add(autoSellService);
     }
 
     @Override
